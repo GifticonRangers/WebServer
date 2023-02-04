@@ -13,6 +13,7 @@ public class Professor extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column private String idProfessor;
     @Column private String pwProfessor;
     @Column private String nameProfessor;

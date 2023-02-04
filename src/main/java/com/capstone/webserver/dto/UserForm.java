@@ -21,9 +21,7 @@ public class UserForm {
     private String department;
     private int type;
 
-    public Student toStudentEntity(){
-        return new Student(id, idUser, pwUser, name, phone, email, department);
-    }
+    public Student toStudentEntity() { return new Student(id, idUser, pwUser, name, phone, email, department); }
 
     public Professor toProfessorEntity(){
         return new Professor(id, idUser, pwUser, name, phone, email, department);

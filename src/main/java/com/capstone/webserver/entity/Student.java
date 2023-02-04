@@ -12,10 +12,13 @@ import javax.persistence.*;
 @AllArgsConstructor
 @ToString
 @Getter
+@Table(name="student")
 public class Student extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id", unique=true)
     private Long id;
+
     @Column private String idStudent;
     @Column private String pwStudent;
     @Column private String nameStudent;
