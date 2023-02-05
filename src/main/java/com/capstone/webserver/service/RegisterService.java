@@ -20,20 +20,20 @@ public class RegisterService {
     public User register(UserForm dto) {
         if(dto.getType() == 0) {
             Student std = dto.toStudentEntity();
-            log.info("Student: {}", std.toString());
             studentRepository.save(std);
+            log.info("Student: {}", std.toString());
             return std;
         }
 
         else if(dto.getType() == 1){
             Professor pf = dto.toProfessorEntity();
-            log.info("Professor: {}", pf.toString());
             professorRepository.save(pf);
+            log.info("Professor: {}", pf.toString());
             return pf;
         }
 
         else {
-            log.error("Invalid request.: type Error");
+            log.error("Invalid request: type Error");
             return null;
         }
     }
