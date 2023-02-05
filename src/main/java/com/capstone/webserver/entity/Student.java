@@ -12,7 +12,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @ToString
 @Getter
-@Table(name="student")
 public class Student extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
