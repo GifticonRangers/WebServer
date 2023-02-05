@@ -16,7 +16,6 @@ import javax.persistence.*;
 public class Student extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id", unique=true)
     private Long id;
 
     @Column private String idStudent;
