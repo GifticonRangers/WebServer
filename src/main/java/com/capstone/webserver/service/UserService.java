@@ -1,10 +1,8 @@
 package com.capstone.webserver.service;
 
-import com.capstone.webserver.entity.Professor;
-import com.capstone.webserver.entity.Student;
+import com.capstone.webserver.entity.Role;
 import com.capstone.webserver.entity.User;
-import com.capstone.webserver.repository.ProfessorRepository;
-import com.capstone.webserver.repository.StudentRepository;
+import com.capstone.webserver.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,40 +13,29 @@ import java.util.ArrayList;
 @Slf4j
 public class UserService {
     @Autowired
-    StudentRepository studentRepository;
-    @Autowired
-    ProfessorRepository professorRepository;
+    UserRepository userRepository;
 
-
-    public ArrayList<Student> showStudents() {
-        log.info("Request showStudent: All");
-        return studentRepository.findAll();
+    /* 모든 유저 반환 */
+    public ArrayList<User> showAllUser() {
+        log.info("Request show: All");
+        return userRepository.findAll();
     }
 
-    public Student showStudent(Long id) {
-        Student std = studentRepository.findById(id).orElse(null);
+    /* 타입별 유저 반환 */
+    public ArrayList<User> showTypeUser(Role type) {
+        log.info("Request show: {}", type);
+        return userRepository.findAllByTypeUser(0);
+    }
 
-        if(std != null)
-            log.info("Request showStudent: {}", std.toString());
+    /* id에 따른 유저 반환 */
+    public User showUser(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+
+        if(user != null)
+            log.info("Request show: {}", user.toString());
         else
             log.error("Invalid request: Not found id");
 
-        return std;
-    }
-
-    public ArrayList<Professor> showProfessors() {
-        log.info("Request showProfessor: All");
-        return professorRepository.findAll();
-    }
-
-    public Professor showProfessor(Long id) {
-        Professor pf = professorRepository.findById(id).orElse(null);
-
-        if(pf != null)
-            log.info("Request showProfessor: {}", pf.toString());
-        else
-            log.error("Invalid request: Not found id");
-
-        return pf;
+        return user;
     }
 }

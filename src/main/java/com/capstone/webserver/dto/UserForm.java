@@ -1,7 +1,7 @@
 package com.capstone.webserver.dto;
 
-import com.capstone.webserver.entity.Professor;
-import com.capstone.webserver.entity.Student;
+import com.capstone.webserver.entity.Role;
+import com.capstone.webserver.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,9 +21,16 @@ public class UserForm {
     private String department;
     private int type;
 
-    public Student toStudentEntity() { return new Student(id, idUser, pwUser, name, phone, email, department); }
-
-    public Professor toProfessorEntity(){
-        return new Professor(id, idUser, pwUser, name, phone, email, department);
+    public User toEntity() {
+        return User.builder()
+                .id(id)
+                .typeUser(Role.values()[type])
+                .idUser(idUser)
+                .pwUser(pwUser)
+                .nameUser(name)
+                .phoneUser(phone)
+                .emailUser(email)
+                .dptUser(department)
+                .build();
     }
 }
