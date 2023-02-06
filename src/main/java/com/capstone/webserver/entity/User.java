@@ -18,11 +18,10 @@ public class User {
     @Column
     @Enumerated(EnumType.STRING)
     private Role typeUser;
-    @Column private String idUser;
+    @Column(unique = true) private String idUser;
     @Column private String pwUser;
     @Column private String nameUser;
     @Column private String phoneUser;
     @Column private String emailUser;
     @Column private String dptUser;
-
 }
