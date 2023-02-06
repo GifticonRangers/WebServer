@@ -7,7 +7,13 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.ArrayList;
 
 public interface UserRepository extends CrudRepository<User, Long> {
+
+    /* 모든 유저 반환 */
     ArrayList<User> findAll();
 
+    /* 특정 타입 유저 반환 */
     ArrayList<User> findAllByTypeUser(Role type);
+
+    /* 해당 IdUser 유저 반환 */
+    User findByIdUser(String id);
 }
