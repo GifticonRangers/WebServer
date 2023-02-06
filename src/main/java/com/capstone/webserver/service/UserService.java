@@ -15,19 +15,19 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    /* ¸ğµç À¯Àú ¹İÈ¯ */
+    /* ëª¨ë“  ìœ ì € ë°˜í™˜ */
     public ArrayList<User> showAllUser() {
         log.info("Request show: All");
         return userRepository.findAll();
     }
 
-    /* Å¸ÀÔº° À¯Àú ¹İÈ¯ */
+    /* íƒ€ì…ë³„ ìœ ì € ë°˜í™˜ */
     public ArrayList<User> showTypeUser(Role type) {
         log.info("Request show: {}", type);
-        return userRepository.findAllByTypeUser(0);
+        return userRepository.findAllByTypeUser(type);
     }
 
-    /* id¿¡ µû¸¥ À¯Àú ¹İÈ¯ */
+    /* idì— ë”°ë¥¸ ìœ ì € ë°˜í™˜ */
     public User showUser(Long id) {
         User user = userRepository.findById(id).orElse(null);
 

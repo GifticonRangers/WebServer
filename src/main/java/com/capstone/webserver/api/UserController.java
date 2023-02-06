@@ -23,20 +23,26 @@ public class UserController {
     @GetMapping("/api/show")
     public ResponseEntity<ArrayList<User>> showAllUser() {
         ArrayList<User> user = userService.showAllUser();
-        return ResponseEntity.status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST).body(user);
+        return ResponseEntity
+                .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(user);
     }
 
     /* api 요청: 타입별 유저 정보 요청 */
     @GetMapping("/api/show/type/{type}")
     public ResponseEntity<ArrayList<User>> showTypeUser(@PathVariable int type) {
         ArrayList<User> user = userService.showTypeUser(Role.values()[type]);
-        return ResponseEntity.status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST).body(user);
+        return ResponseEntity
+                .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(user);
     }
 
     /* api 요청: id에 따른 유저 정보 요청 */
     @GetMapping("/api/show/{id}")
     public ResponseEntity<User> showUser(@PathVariable Long id) {
         User user = userService.showUser(id);
-        return ResponseEntity.status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST).body(user);
+        return ResponseEntity
+                .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(user);
     }
 }

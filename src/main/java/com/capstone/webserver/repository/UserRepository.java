@@ -9,5 +9,5 @@ import java.util.ArrayList;
 public interface UserRepository extends CrudRepository<User, Long> {
     ArrayList<User> findAll();
 
-    ArrayList<User> findAllByTypeUser(int type);
+    ArrayList<User> findAllByTypeUser(Role type);
 }

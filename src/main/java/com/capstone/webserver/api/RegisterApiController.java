@@ -21,6 +21,9 @@ public class RegisterApiController {
     @PostMapping("/api/register")
     public ResponseEntity<User> register(@RequestBody UserForm dto) {
         User user = registerService.register(dto);
-        return ResponseEntity.status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST).body(user);
+
+        return ResponseEntity
+                .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(user);
     }
 }
