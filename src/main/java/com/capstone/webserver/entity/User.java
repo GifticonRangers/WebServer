@@ -10,6 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,3 +26,5 @@ public class User {
     @Column private String emailUser;
     @Column private String dptUser;
 }
+
+//김진바보

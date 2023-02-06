@@ -5,6 +5,7 @@ import com.capstone.webserver.entity.User;
 import com.capstone.webserver.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -14,6 +15,9 @@ import java.util.Objects;
 public class LoginService {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     /* Login Service */
     public User login(UserForm dto) {
@@ -26,7 +30,7 @@ public class LoginService {
             return null;
         }
 
-        if (Objects.equals(target.getPwUser(), user.getPwUser())) {
+        if (passwordEncoder.matches(user.getPwUser(), target.getPwUser())) {
             log.info("Login Success");
             return target;
         }
