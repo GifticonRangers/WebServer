@@ -19,30 +19,51 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    /* api 요청: 모든 유저 정보 요청 */
-    @GetMapping("/api/show")
-    public ResponseEntity<ArrayList<User>> showAllUser() {
-        ArrayList<User> user = userService.showAllUser();
+    /*
+     * API Request: 모든 유저 정보 요청
+     * permission: ADMIN
+     */
+    @GetMapping("/api/admin/show")
+    public ResponseEntity<ArrayList<User>> findAllUser() {
+        ArrayList<User> user = userService.findAllUser();
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(user);
     }
 
-    /* api 요청: 타입별 유저 정보 요청 */
-    @GetMapping("/api/show/type/{type}")
-    public ResponseEntity<ArrayList<User>> showTypeUser(@PathVariable int type) {
-        ArrayList<User> user = userService.showTypeUser(Role.values()[type]);
+    /*
+     * API Request: 모든 유저 정보 요청
+     * permission: ADMIN
+     */
+    @GetMapping("/api/admin/show/{type}")
+    public ResponseEntity<ArrayList<User>> findAllUserByTypeUser(@PathVariable String type) {
+        ArrayList<User> user = userService.findAllUserByTypeUser(type);
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(user);
     }
 
-    /* api 요청: id에 따른 유저 정보 요청 */
-    @GetMapping("/api/show/{id}")
-    public ResponseEntity<User> showUser(@PathVariable Long id) {
-        User user = userService.showUser(id);
+    /*
+     * API Request: 특정 유저 정보 요청
+     * permission: ADMIN
+     */
+    @GetMapping("/api/admin/show/{id}")
+    public ResponseEntity<User> findUserById(@PathVariable Long id) {
+        User user = userService.findUserById(id);
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(user);
+    }
+
+    /*
+     * API Request: id 중복 체크 확인
+     * permission: ADMIN
+     */
+    @GetMapping("/api/admin/checkId/{target}")
+    public ResponseEntity checkDuplicateId(@PathVariable String target) {
+        boolean check = userService.checkDuplicateId(target);
+        return ResponseEntity
+                .status(check ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .build();
     }
 }

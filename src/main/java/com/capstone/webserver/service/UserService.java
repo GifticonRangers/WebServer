@@ -16,19 +16,36 @@ public class UserService {
     UserRepository userRepository;
 
     /* 모든 유저 반환 */
-    public ArrayList<User> showAllUser() {
+    public ArrayList<User> findAllUser() {
         log.info("Request show: All");
         return userRepository.findAll();
     }
 
     /* 타입별 유저 반환 */
-    public ArrayList<User> showTypeUser(Role type) {
+    public ArrayList<User> findAllUserByTypeUser(String type) {
         log.info("Request show: {}", type);
-        return userRepository.findAllByTypeUser(type);
+        Role role;
+
+        switch (type){
+            case "admin":
+                role = Role.ADMIN;
+                break;
+            case "professor":
+                role = Role.PROFESSOR;
+                break;
+            case "student":
+                role = Role.STUDENT;
+                break;
+            default:
+                log.error("Invalid request: Not found type");
+                return null;
+        }
+
+        return userRepository.findAllByTypeUser(role);
     }
 
     /* id에 따른 유저 반환 */
-    public User showUser(Long id) {
+    public User findUserById(Long id) {
         User user = userRepository.findById(id).orElse(null);
 
         if(user != null)
@@ -37,5 +54,10 @@ public class UserService {
             log.error("Invalid request: Not found id");
 
         return user;
+    }
+
+    /* id 중복 체크 */
+    public boolean checkDuplicateId(String id) {
+        return userRepository.findByIdUser(id) == null;
     }
 }
