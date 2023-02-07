@@ -29,7 +29,7 @@ public class UserSecurityConfiguration {
 
         http
                 .authorizeRequests()
-                    .antMatchers("/", "/api/signup", "/api/login").permitAll()
+                    .antMatchers("/", "/api/signup", "/api/login", "/api/admin/subject/update", "/api/admin/subject/show").permitAll()
                     // 권한에 따라 아래 경로에만 접속가능하게끔 설정
                     .antMatchers("/**").hasAnyRole("ADMIN")
                     .antMatchers("/api/professor/**").hasAnyRole("PROFESSOR")

@@ -25,5 +25,5 @@ public class Subject {
     @Column private String nameSubject;
     @Column private String profSubject;
     @Column private String timeSubject;
-    @Column private int creditSubject;
+    @Column private String creditSubject;
 }
