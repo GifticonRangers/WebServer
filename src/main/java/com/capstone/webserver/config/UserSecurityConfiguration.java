@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -35,15 +37,14 @@ public class UserSecurityConfiguration {
                     // 그 외 모든 리소스는 인증이 필요
                     .anyRequest().authenticated();
 
-//        http
-//                .formLogin()
-//                    .permitAll()
-//                    .loginPage("/login"); // Default log-in page
-
         http
                 .logout()
                     .permitAll()
                     .logoutRequestMatcher(new AntPathRequestMatcher("/api/logout")) // Default log-out page, 주소창에 요청해도 POST로 인식
+                    // redirect 하지 않고 바로 logout 처리
+                    .logoutSuccessHandler(((request, response, authentication) -> {
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    }))
                     .deleteCookies("JSESSIONID") // Delete JESSIONID on log-out
                     .invalidateHttpSession(true) // End Session on log-out
                     .clearAuthentication(true);  // Clear Authentication on log-out
