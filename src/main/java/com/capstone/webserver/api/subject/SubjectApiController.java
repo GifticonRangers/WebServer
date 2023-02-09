@@ -1,7 +1,7 @@
 package com.capstone.webserver.api.subject;
 
 import com.capstone.webserver.entity.subject.Subject;
-import com.capstone.webserver.service.subject.SubjectService;
+import com.capstone.webserver.api.service.subject.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

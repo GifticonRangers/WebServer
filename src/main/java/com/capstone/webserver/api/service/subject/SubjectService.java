@@ -1,4 +1,4 @@
-package com.capstone.webserver.service.subject;
+package com.capstone.webserver.api.service.subject;
 
 import com.capstone.webserver.entity.subject.Subject;
 import com.capstone.webserver.entity.subject.GetSubjectJSONModel;

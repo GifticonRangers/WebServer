@@ -1,4 +1,4 @@
-package com.capstone.webserver.service.login;
+package com.capstone.webserver.api.service.login;
 
 import com.capstone.webserver.dto.user.UserForm;
 import com.capstone.webserver.entity.user.User;
@@ -10,24 +10,30 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class SignUpService {
+public class LoginService {
     @Autowired
     UserRepository userRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    /* SignUp Service */
-    public User signup(UserForm dto) {
+    /* Login Service */
+    public User login(UserForm dto) {
         User user = dto.toEntity();
-        if(user != null) {
-            user.setPwUser(passwordEncoder.encode(user.getPwUser()));
-            userRepository.save(user);
-            log.info("User: {}", user.toString());
-            return user;
+        log.info("User: {}", user.toString());
+        User target = userRepository.findByIdUser(user.getIdUser());
+
+        if (target == null) {
+            log.error("Invalid request: Not found id");
+            return null;
+        }
+
+        if (passwordEncoder.matches(user.getPwUser(), target.getPwUser())) {
+            log.info("Login Success");
+            return target;
         }
         else {
-            log.error("Invalid request: type Error");
+            log.error("Login Failed");
             return null;
         }
     }
