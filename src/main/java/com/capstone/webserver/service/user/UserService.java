@@ -1,4 +1,4 @@
-package com.capstone.webserver.api.service.user;
+package com.capstone.webserver.service.user;
 
 import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;

@@ -2,7 +2,7 @@ package com.capstone.webserver.api.login;
 
 import com.capstone.webserver.dto.user.UserForm;
 import com.capstone.webserver.entity.user.User;
-import com.capstone.webserver.api.service.login.LoginService;
+import com.capstone.webserver.service.login.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

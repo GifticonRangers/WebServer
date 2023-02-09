@@ -1,7 +1,7 @@
 package com.capstone.webserver.api.user;
 
 import com.capstone.webserver.entity.user.User;
-import com.capstone.webserver.api.service.user.UserService;
+import com.capstone.webserver.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
