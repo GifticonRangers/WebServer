@@ -1,13 +1,12 @@
-package com.capstone.webserver.api;
+package com.capstone.webserver.api.subject;
 
-import com.capstone.webserver.entity.Subject;
-import com.capstone.webserver.service.SubjectService;
+import com.capstone.webserver.entity.subject.Subject;
+import com.capstone.webserver.service.subject.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileNotFoundException;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 
 @RestController
 @Slf4j
-public class SubjectController {
+public class SubjectApiController {
 
     @Autowired
     SubjectService subjectService;

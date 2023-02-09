@@ -1,7 +1,7 @@
-package com.capstone.webserver.service;
+package com.capstone.webserver.service.login;
 
-import com.capstone.webserver.dto.UserForm;
-import com.capstone.webserver.entity.User;
+import com.capstone.webserver.dto.user.UserForm;
+import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

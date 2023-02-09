@@ -1,5 +1,6 @@
-package com.capstone.webserver.entity;
+package com.capstone.webserver.entity.user;
 
+import com.capstone.webserver.entity.user.Role;
 import lombok.*;
 
 import javax.persistence.*;

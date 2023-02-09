@@ -1,4 +1,4 @@
-package com.capstone.webserver.entity;
+package com.capstone.webserver.entity.subject;
 
 import lombok.*;
 

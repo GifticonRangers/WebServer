@@ -1,8 +1,7 @@
-package com.capstone.webserver.api;
+package com.capstone.webserver.api.user;
 
-import com.capstone.webserver.entity.Role;
-import com.capstone.webserver.entity.User;
-import com.capstone.webserver.service.UserService;
+import com.capstone.webserver.entity.user.User;
+import com.capstone.webserver.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 
 @RestController
 @Slf4j
-public class UserController {
+public class UserApiController {
     @Autowired
     UserService userService;
 

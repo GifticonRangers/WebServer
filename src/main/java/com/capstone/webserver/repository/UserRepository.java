@@ -1,7 +1,7 @@
 package com.capstone.webserver.repository;
 
-import com.capstone.webserver.entity.Role;
-import com.capstone.webserver.entity.User;
+import com.capstone.webserver.entity.user.Role;
+import com.capstone.webserver.entity.user.User;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.ArrayList;

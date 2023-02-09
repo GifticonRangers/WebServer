@@ -1,10 +1,9 @@
-package com.capstone.webserver.service;
+package com.capstone.webserver.service.subject;
 
-import com.capstone.webserver.entity.Subject;
-import com.capstone.webserver.entity.getJsonModel;
+import com.capstone.webserver.entity.subject.Subject;
+import com.capstone.webserver.entity.subject.GetSubjectJSONModel;
 import com.capstone.webserver.repository.SubjectRepository;
 import com.google.gson.Gson;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class SubjectService {
 //        Reader reader = new FileReader("C:\\Users\\user\\hg_yellow\\capstone-designs\\WebServer\\src\\main\\resources\\json\\subject.json");
         Reader reader = new FileReader("D:\\INU-LECTURE\\WebServer\\src\\main\\resources\\json\\subject.json");
         Gson gson = new Gson();
-        getJsonModel subjects = gson.fromJson(reader, getJsonModel.class);
+        GetSubjectJSONModel subjects = gson.fromJson(reader, GetSubjectJSONModel.class);
         for(Subject subject: subjects.getSubject()){
             subjectRepository.save(subject);
             log.info("Subject: {}", subject.toString());

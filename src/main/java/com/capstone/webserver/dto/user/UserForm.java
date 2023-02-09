@@ -1,7 +1,7 @@
-package com.capstone.webserver.dto;
+package com.capstone.webserver.dto.user;
 
-import com.capstone.webserver.entity.Role;
-import com.capstone.webserver.entity.User;
+import com.capstone.webserver.entity.user.Role;
+import com.capstone.webserver.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

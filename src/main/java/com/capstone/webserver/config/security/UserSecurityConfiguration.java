@@ -1,4 +1,4 @@
-package com.capstone.webserver.config;
+package com.capstone.webserver.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
