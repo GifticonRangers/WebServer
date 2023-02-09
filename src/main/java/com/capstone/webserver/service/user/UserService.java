@@ -55,9 +55,4 @@ public class UserService {
 
         return user;
     }
-
-    /* id 중복 체크 */
-    public boolean checkDuplicateId(String id) {
-        return userRepository.findByIdUser(id) == null;
-    }
 }

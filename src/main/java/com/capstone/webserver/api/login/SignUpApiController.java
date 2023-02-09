@@ -7,9 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -29,5 +27,18 @@ public class SignUpApiController {
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(user);
+    }
+
+
+    /*
+     * API Request: id 중복 체크 확인
+     * permission: ADMIN
+     */
+    @GetMapping("/api/admin/checkId/{target}")
+    public ResponseEntity<Boolean> checkDuplicateId(@PathVariable String target) {
+        Boolean check = signUpService.checkDuplicateId(target);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(check);
     }
 }

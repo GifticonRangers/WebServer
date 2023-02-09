@@ -53,16 +53,4 @@ public class UserApiController {
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(user);
     }
-
-    /*
-     * API Request: id 중복 체크 확인
-     * permission: ADMIN
-     */
-    @GetMapping("/api/admin/checkId/{target}")
-    public ResponseEntity checkDuplicateId(@PathVariable String target) {
-        boolean check = userService.checkDuplicateId(target);
-        return ResponseEntity
-                .status(check ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
-                .build();
-    }
 }
