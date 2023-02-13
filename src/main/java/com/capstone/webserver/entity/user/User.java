@@ -26,6 +26,7 @@ public class User {
     @Column private String phoneUser;
     @Column private String emailUser;
     @Column private String dptUser;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Gender genderUser;
 }
-
-//김진바보

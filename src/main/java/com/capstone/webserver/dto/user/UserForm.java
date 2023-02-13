@@ -1,5 +1,6 @@
 package com.capstone.webserver.dto.user;
 
+import com.capstone.webserver.entity.user.Gender;
 import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class UserForm {
     private String email;
     private String department;
     private int type;
+    private int gender;
 
     public User toEntity() {
         return User.builder()
@@ -31,6 +33,7 @@ public class UserForm {
                 .phoneUser(phone)
                 .emailUser(email)
                 .dptUser(department)
+                .genderUser(Gender.values()[gender])
                 .build();
     }
 }
