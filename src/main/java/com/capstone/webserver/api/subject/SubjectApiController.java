@@ -1,5 +1,6 @@
 package com.capstone.webserver.api.subject;
 
+import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.entity.subject.Subject;
 import com.capstone.webserver.service.subject.SubjectService;
 import lombok.extern.slf4j.Slf4j;
