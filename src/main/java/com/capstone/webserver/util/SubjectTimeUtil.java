@@ -101,7 +101,7 @@ public class SubjectTimeUtil {
                     temp = "";
                 }
 
-                else if(time.charAt(i) != '[')
+                else
                     temp += time.charAt(i);
             }
         }
