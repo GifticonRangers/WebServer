@@ -29,11 +29,11 @@ public class UserSecurityConfiguration {
 
         http
                 .authorizeRequests()
-                    .antMatchers("/", "/api/signup", "/api/login", "/api/admin/subject/update", "/api/admin/subject/show").permitAll()
+                    .antMatchers("/**").permitAll()
                     // 권한에 따라 아래 경로에만 접속가능하게끔 설정
-                    .antMatchers("/**").hasAnyRole("ADMIN")
-                    .antMatchers("/api/professor/**").hasAnyRole("PROFESSOR")
-                    .antMatchers("/api/student/**").hasAnyRole("STUDENT")
+                    //.antMatchers("/**").hasAnyRole("ADMIN")
+                    //.antMatchers("/api/professor/**").hasAnyRole("PROFESSOR")
+                    //.antMatchers("/api/student/**").hasAnyRole("STUDENT")
                     // 그 외 모든 리소스는 인증이 필요
                     .anyRequest().authenticated();
 
