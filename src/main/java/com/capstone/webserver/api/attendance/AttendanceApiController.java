@@ -16,9 +16,9 @@ public class AttendanceApiController {
     AttendanceService attendanceService;
 
 
-    @PostMapping("/api/professor/subject/createAttendanceList/")
+    @PostMapping("/api/professor/subject/createAttendanceList")
     public ResponseEntity<ArrayList<Attendance>> createAttendanceList(@RequestBody AuditorForm dto) {
-        ArrayList<Attendance> attendanceArrayList = attendanceService.createAttendanceList(dto.getIdSubject(), dto.getId());
+        ArrayList<Attendance> attendanceArrayList = attendanceService.createAttendanceList(dto.getIdSubject(), dto.getIdStudent());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();

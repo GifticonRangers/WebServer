@@ -13,7 +13,9 @@ import javax.persistence.*;
 @Setter
 public class Auditor {
     @Id
-    private Long idStudent;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column private Long idStudent;
     @Column private Long idSubject;
 }

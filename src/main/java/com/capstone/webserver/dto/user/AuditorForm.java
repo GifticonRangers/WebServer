@@ -11,13 +11,14 @@ import lombok.ToString;
 @ToString
 @Getter
 public class AuditorForm {
-    private Long id;
+    private Long idStudent;
     private Long idSubject;
 
     public Auditor toEntity() {
         return Auditor
                 .builder()
-                .idStudent(id)
+                .id(null)
+                .idStudent(idStudent)
                 .idSubject(idSubject)
                 .build();
     }
