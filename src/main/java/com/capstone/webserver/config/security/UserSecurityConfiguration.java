@@ -27,6 +27,8 @@ public class UserSecurityConfiguration {
         http
                 .csrf().disable(); // post 방식으로 값을 전송할 때 token을 사용해야 하는 보안 설정 해제
 
+        /*
+        /*
         http
                 .authorizeRequests()
                     .antMatchers("/", "/api/signup", "/api/login", "/api/admin/subject/update", "/api/admin/subject/show").permitAll()
@@ -36,7 +38,6 @@ public class UserSecurityConfiguration {
                     .antMatchers("/api/student/**").hasAnyRole("STUDENT")
                     // 그 외 모든 리소스는 인증이 필요
                     .anyRequest().authenticated();
-
         http
                 .logout()
                     .permitAll()
@@ -48,7 +49,7 @@ public class UserSecurityConfiguration {
                     .deleteCookies("JSESSIONID") // Delete JESSIONID on log-out
                     .invalidateHttpSession(true) // End Session on log-out
                     .clearAuthentication(true);  // Clear Authentication on log-out
-
+        */
         return http.build();
     }
 }
