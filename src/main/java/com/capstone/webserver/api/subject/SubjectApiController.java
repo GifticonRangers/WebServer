@@ -3,6 +3,12 @@ package com.capstone.webserver.api.subject;
 import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.entity.subject.Subject;
 import com.capstone.webserver.service.subject.SubjectService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +21,7 @@ import java.util.ArrayList;
 
 @RestController
 @Slf4j
+@Tag(name = "Subject", description = "Subject 등록 및 조회 API")
 public class SubjectApiController {
 
     @Autowired
@@ -25,7 +32,10 @@ public class SubjectApiController {
      * API Request: json에서 강좌 DB에 등록
      * permission: Admin
      */
-    @GetMapping("/api/admin/subject/update")
+
+    @Operation(summary = "Subject 등록",
+               description = "subject.json을 읽어와 DB에 등록")
+    @GetMapping("/api/subject/updateSubject")
     public ResponseEntity update() throws FileNotFoundException {
         subjectService.update();
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -35,7 +45,16 @@ public class SubjectApiController {
      * API Request: json에서 강좌 DB에 등록
      * permission: All user
      */
-    @GetMapping("/api/admin/subject/show")
+    @Operation(summary = "Subject 등록",
+               description = "subject.json을 읽어와 DB에 등록")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                         description = "successful operation",
+                         content = @Content(schema = @Schema(implementation = Subject.class))),
+            @ApiResponse(responseCode = "400",
+                         description = "bad request operation")
+    })
+    @GetMapping("/api/subject/show")
     public ResponseEntity<ArrayList<Subject>> show() throws FileNotFoundException {
         ArrayList<Subject> subjects = subjectService.show();
         return ResponseEntity.status(subjects != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST).body(subjects);
