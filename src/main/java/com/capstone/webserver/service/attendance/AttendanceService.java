@@ -42,7 +42,7 @@ public class AttendanceService {
                     target.getTimeSubject()
             );
 
-            ArrayList<Auditor> auditors = auditorRepository.findAllByIdSubject(subjectId);
+            ArrayList<Auditor> auditors = auditorRepository.findAllByIdUser(subjectId);
 
             for(Auditor auditor: auditors){
                 for (int i = 1; i <= 16; i++) {
@@ -54,7 +54,7 @@ public class AttendanceService {
                                         .dateAttendance(schedule)
                                         .stateAttendance(State.ATTENDANCE)
                                         .idProfessor(professorId)
-                                        .idStudent(auditor.getIdStudent())
+                                        .idStudent(auditor.getIdUser())
                                         .idSubject(subjectId)
                                         .build());
                     }

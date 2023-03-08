@@ -3,6 +3,8 @@ package com.capstone.webserver.api.user;
 import com.capstone.webserver.dto.user.AuditorForm;
 import com.capstone.webserver.entity.user.Auditor;
 import com.capstone.webserver.service.user.AuditorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,11 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
+@Tag(name = "user", description = "auditor API")
 public class AuditorApiController {
     @Autowired
     AuditorService auditorService;
 
-    @PostMapping("/api/student/auditor/create")
+    @Operation(summary = "수강생 생성",
+               description = "수강생 생성에 관련")
+    @PostMapping("/api/user/auditor/create")
     public ResponseEntity<Auditor> create(@RequestBody AuditorForm dto) {
         Auditor auditor = auditorService.create(dto);
         return ResponseEntity

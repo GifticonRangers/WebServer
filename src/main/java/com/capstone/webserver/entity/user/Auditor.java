@@ -1,5 +1,6 @@
 package com.capstone.webserver.entity.user;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,6 +17,9 @@ public class Auditor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column private Long idStudent;
+    @Schema(description = "User의 기본키값")
+    @Column private Long idUser;
+
+    @Schema(description = "Subject의 기본키값")
     @Column private Long idSubject;
 }

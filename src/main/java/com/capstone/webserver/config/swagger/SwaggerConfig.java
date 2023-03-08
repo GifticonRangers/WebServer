@@ -10,10 +10,34 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
     @Bean
-    public GroupedOpenApi jwtApi() {
+    public GroupedOpenApi attendanceApi() {
         return GroupedOpenApi.builder()
-                .group("jwt-api")
-                .pathsToMatch("/**")
+                .group("attendance-api")
+                .pathsToMatch("/api/attendance/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi loginApi() {
+        return GroupedOpenApi.builder()
+                .group("login-api")
+                .pathsToMatch("/api/login/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi subjectApi() {
+        return GroupedOpenApi.builder()
+                .group("subject-api")
+                .pathsToMatch("/api/subject/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi userApi() {
+        return GroupedOpenApi.builder()
+                .group("user-api")
+                .pathsToMatch("/api/user/**")
                 .build();
     }
 

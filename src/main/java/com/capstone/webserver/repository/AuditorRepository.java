@@ -15,5 +15,5 @@ public interface AuditorRepository extends CrudRepository<Auditor, Long> {
     ArrayList<Auditor> findAllByIdSubject(Long idSubject);
 
     /* 특정 수강생이 듣는 강좌 반환 */
-    ArrayList<Auditor> findAllByIdStudent(Long idStudent);
+    ArrayList<Auditor> findAllByIdUser(Long idStudent);
 }
