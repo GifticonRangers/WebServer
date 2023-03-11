@@ -1,6 +1,6 @@
 package com.capstone.webserver.api.login;
 
-import com.capstone.webserver.dto.user.UserForm;
+import com.capstone.webserver.dto.user.UserDTO;
 import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.service.login.SignUpService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +37,7 @@ public class SignUpApiController {
                     description = "bad request operation")
     })
     @PostMapping("/api/login/signup")
-    public ResponseEntity<User> signup(@RequestBody UserForm dto) {
+    public ResponseEntity<User> signup(@RequestBody UserDTO.UserForm dto) {
         User user = signUpService.signup(dto);
 
         return ResponseEntity

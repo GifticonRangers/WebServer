@@ -1,6 +1,6 @@
 package com.capstone.webserver.api.login;
 
-import com.capstone.webserver.dto.user.UserForm;
+import com.capstone.webserver.dto.user.UserDTO;
 import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.service.login.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +27,7 @@ public class LoginApiController {
     @Operation(summary = "login page",
                description = "로그인에 필요한 정보를 입력")
     @PostMapping("/api/login/login")
-    public ResponseEntity<User> login(@RequestBody UserForm dto) {
+    public ResponseEntity<User> login(@RequestBody UserDTO.UserForm dto) {
         User user = loginService.login(dto);
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)

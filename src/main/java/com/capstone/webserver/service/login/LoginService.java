@@ -1,6 +1,6 @@
 package com.capstone.webserver.service.login;
 
-import com.capstone.webserver.dto.user.UserForm;
+import com.capstone.webserver.dto.user.UserDTO;
 import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ public class LoginService {
     PasswordEncoder passwordEncoder;
 
     /* Login Service */
-    public User login(UserForm dto) {
+    public User login(UserDTO.UserForm dto) {
         User user = dto.toEntity();
         log.info("User: {}", user.toString());
         User target = userRepository.findByIdUser(user.getIdUser());

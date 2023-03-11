@@ -1,6 +1,6 @@
 package com.capstone.webserver.api.attendance;
 
-import com.capstone.webserver.dto.user.AuditorForm;
+import com.capstone.webserver.dto.user.UserDTO;
 import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.service.attendance.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +22,7 @@ public class AttendanceApiController {
     @Operation(summary = "attendance 등록",
             description = "강좌를 듣는 수강생 attendance 등록")
     @PostMapping("/api/attendance/createAttendanceList")
-    public ResponseEntity<ArrayList<Attendance>> createAttendanceList(@RequestBody AuditorForm dto) {
+    public ResponseEntity<ArrayList<Attendance>> createAttendanceList(@RequestBody UserDTO.UserSubjectInfoForm dto) {
         ArrayList<Attendance> attendanceArrayList = attendanceService.createAttendanceList(dto.getIdSubject(), dto.getIdUser());
         return ResponseEntity
                 .status(HttpStatus.OK)
