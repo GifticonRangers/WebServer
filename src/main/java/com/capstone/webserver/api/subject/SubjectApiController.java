@@ -1,7 +1,9 @@
 package com.capstone.webserver.api.subject;
 
-import com.capstone.webserver.entity.attendance.Attendance;
+import com.capstone.webserver.dto.SubjectDTO;
+import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.subject.Subject;
+import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.service.subject.SubjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileNotFoundException;
@@ -42,11 +46,11 @@ public class SubjectApiController {
     }
 
     /*
-     * API Request: json에서 강좌 DB에 등록
+     * API Request: Subject 조회
      * permission: All user
      */
-    @Operation(summary = "Subject 등록",
-               description = "subject.json을 읽어와 DB에 등록")
+    @Operation(summary = "Subject 조회",
+               description = "subject DB에서 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                          description = "successful operation",
@@ -57,6 +61,50 @@ public class SubjectApiController {
     @GetMapping("/api/subject/show")
     public ResponseEntity<ArrayList<Subject>> show() throws FileNotFoundException {
         ArrayList<Subject> subjects = subjectService.show();
-        return ResponseEntity.status(subjects != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST).body(subjects);
+        return ResponseEntity
+                .status(subjects != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(subjects);
+    }
+
+    /*
+     * API Request: 유저별 Subject 조회
+     * permission: All user
+     */
+    @Operation(summary = "특정 유저가 듣는 강좌 조회",
+            description = "Auditor DB에서 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "successful operation",
+                    content = @Content(schema = @Schema(implementation = Subject.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "bad request operation")
+    })
+    @PostMapping("/api/subject/showSubjectByUserId")
+    public ResponseEntity<ArrayList<Subject>> showSubjectByUserId(@RequestBody UserDTO.UserForm dto) {
+        ArrayList<Subject> subjects = subjectService.showSubjectByUserId(dto);
+        return ResponseEntity
+                .status(subjects != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(subjects);
+    }
+
+    /*
+     * API Request: 특정 과목별 수강생 조회
+     * permission: Professor
+     */
+    @Operation(summary = "특정 과목별 수강생 조회",
+            description = "Auditor DB에서 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "successful operation",
+                    content = @Content(schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "bad request operation")
+    })
+    @PostMapping("/api/subject/showUserBySubjectId")
+    public ResponseEntity<ArrayList<User>> showUserBySubjectId(@RequestBody SubjectDTO.SubjectForm dto) {
+        ArrayList<User> users = subjectService.showUserBySubjectId(dto);
+        return ResponseEntity
+                .status(users != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(users);
     }
 }

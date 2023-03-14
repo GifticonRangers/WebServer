@@ -1,8 +1,14 @@
 package com.capstone.webserver.service.subject;
 
+import com.capstone.webserver.dto.SubjectDTO;
+import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.subject.Subject;
 import com.capstone.webserver.entity.subject.GetSubjectJSONModel;
+import com.capstone.webserver.entity.user.Auditor;
+import com.capstone.webserver.entity.user.User;
+import com.capstone.webserver.repository.AuditorRepository;
 import com.capstone.webserver.repository.SubjectRepository;
+import com.capstone.webserver.repository.UserRepository;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +25,16 @@ public class SubjectService {
     @Autowired
     SubjectRepository subjectRepository;
 
+    @Autowired
+    AuditorRepository auditorRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
     /* DB에 과목 등록 */
     public void update() throws FileNotFoundException {
-//        Reader reader = new FileReader("C:\\Users\\user\\hg_yellow\\capstone-designs\\WebServer\\src\\main\\resources\\json\\subject.json");
-        Reader reader = new FileReader("D:\\INU-LECTURE\\WebServer\\src\\main\\resources\\json\\subject.json");
+        Reader reader = new FileReader("C:\\Users\\user\\hg_yellow\\capstone-designs\\WebServer\\src\\main\\resources\\json\\subject.json");
+//        Reader reader = new FileReader("D:\\INU-LECTURE\\WebServer\\src\\main\\resources\\json\\subject.json");
         Gson gson = new Gson();
         GetSubjectJSONModel subjects = gson.fromJson(reader, GetSubjectJSONModel.class);
         for(Subject subject: subjects.getSubject()){
@@ -36,5 +48,49 @@ public class SubjectService {
     public ArrayList<Subject> show(){
         log.info("Request show: All");
         return subjectRepository.findAll();
+    }
+
+    /* 특정 유저가 듣는 과목 정보 반환 */
+    public ArrayList<Subject> showSubjectByUserId(UserDTO.UserForm dto) {
+        Long id = dto.getId();
+
+        if (id == null) {
+            log.error("Error: Not found id");
+            return null;
+        }
+
+        ArrayList<Auditor> auditors = auditorRepository.findAllByIdUser(id);
+        ArrayList<Subject> subjects = new ArrayList<Subject>();
+
+        for (Auditor auditor: auditors)
+            subjects.add(
+                    subjectRepository
+                            .findById(auditor.getIdSubject())
+                            .orElse(null)
+            );
+
+
+        return subjects;
+    }
+
+    public ArrayList<User> showUserBySubjectId(SubjectDTO.SubjectForm dto) {
+        Long id = dto.getId();
+
+        if (id == null) {
+            log.error("Error: Not found id");
+            return null;
+        }
+
+        ArrayList<Auditor> auditors = auditorRepository.findAllByIdSubject(id);
+        ArrayList<User> users = new ArrayList<User>();
+
+        for (Auditor auditor: auditors)
+            users.add(
+                    userRepository
+                            .findById(auditor.getIdUser())
+                            .orElse(null)
+            );
+
+        return users;
     }
 }

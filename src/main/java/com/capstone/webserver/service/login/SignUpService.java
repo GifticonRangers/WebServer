@@ -1,6 +1,6 @@
 package com.capstone.webserver.service.login;
 
-import com.capstone.webserver.dto.user.UserDTO;
+import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;

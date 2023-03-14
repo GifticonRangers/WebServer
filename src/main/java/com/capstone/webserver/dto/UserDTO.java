@@ -1,4 +1,4 @@
-package com.capstone.webserver.dto.user;
+package com.capstone.webserver.dto;
 
 import com.capstone.webserver.entity.user.Auditor;
 import com.capstone.webserver.entity.user.Gender;

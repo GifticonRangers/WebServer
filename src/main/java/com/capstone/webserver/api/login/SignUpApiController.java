@@ -1,6 +1,6 @@
 package com.capstone.webserver.api.login;
 
-import com.capstone.webserver.dto.user.UserDTO;
+import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.service.login.SignUpService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,6 +1,6 @@
 package com.capstone.webserver.api.user;
 
-import com.capstone.webserver.dto.user.UserDTO;
+import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.user.Auditor;
 import com.capstone.webserver.service.user.AuditorService;
 import io.swagger.v3.oas.annotations.Operation;

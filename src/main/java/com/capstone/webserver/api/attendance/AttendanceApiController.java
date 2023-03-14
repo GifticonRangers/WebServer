@@ -1,6 +1,6 @@
 package com.capstone.webserver.api.attendance;
 
-import com.capstone.webserver.dto.user.UserDTO;
+import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.service.attendance.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
