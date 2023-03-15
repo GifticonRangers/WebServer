@@ -1,5 +1,6 @@
 package com.capstone.webserver.util;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class DateUtil {
@@ -32,15 +33,25 @@ public class DateUtil {
          * 3단계: for문 돌면서 attendance에 시간 추가하기
          */
         Map<Integer, ArrayList<String>> attendance = new HashMap<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         for (int i = 1; i <= 16; i++) {
             attendance.put(i, new ArrayList<String>());
 
             for (String w : week) {
-                if(splitSubjectTime.containsKey(w))
-                    for (String t : splitSubjectTime.get(w))
-                        attendance.get(i).add(w+t);
+                if(splitSubjectTime.containsKey(w)) {
+                    int j = 1;
+                    for (String t : splitSubjectTime.get(w)) {
+                        attendance.get(i).add(sdf.format(
+                                startDay.getTime()) +
+                                "-" + w + "-(" + t + ")-" +
+                                i + "주차-" + j + "차시");
+                        j++;
+                    }
+                }
+                startDay.add(Calendar.DATE, 1);
             }
+
         }
 
         return attendance;
