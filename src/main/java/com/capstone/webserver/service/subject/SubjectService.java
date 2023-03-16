@@ -5,6 +5,7 @@ import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.subject.Subject;
 import com.capstone.webserver.entity.subject.GetSubjectJSONModel;
 import com.capstone.webserver.entity.user.Auditor;
+import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.repository.AuditorRepository;
 import com.capstone.webserver.repository.SubjectRepository;
@@ -84,12 +85,11 @@ public class SubjectService {
         ArrayList<Auditor> auditors = auditorRepository.findAllByIdSubject(id);
         ArrayList<User> users = new ArrayList<User>();
 
-        for (Auditor auditor: auditors)
-            users.add(
-                    userRepository
-                            .findById(auditor.getIdUser())
-                            .orElse(null)
-            );
+        for (Auditor auditor: auditors) {
+            User user = userRepository.findByIdAndTypeUser(auditor.getIdUser(), Role.STUDENT);
+            if(user != null)
+                users.add(user);
+        }
 
         return users;
     }

@@ -16,4 +16,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     /* 해당 IdUser 유저 반환 */
     User findByIdUser(String id);
+
+    /* 해당 아이디와 역할 찾는 것 */
+    User findByIdAndTypeUser(Long id, Role typeUser);
 }
