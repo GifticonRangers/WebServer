@@ -1,5 +1,6 @@
 package com.capstone.webserver.api.login;
 
+import com.capstone.webserver.dto.TokenInfoDTO;
 import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.service.login.LoginService;
@@ -27,10 +28,10 @@ public class LoginApiController {
     @Operation(summary = "login page",
                description = "로그인에 필요한 정보를 입력")
     @PostMapping("/api/login/login")
-    public ResponseEntity<User> login(@RequestBody UserDTO.UserForm dto) {
-        User user = loginService.login(dto);
+    public ResponseEntity<TokenInfoDTO> login(@RequestBody UserDTO.UserForm dto) {
+        TokenInfoDTO token = loginService.login(dto);
         return ResponseEntity
-                .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
-                .body(user);
+                .status(token != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(token);
     }
 }

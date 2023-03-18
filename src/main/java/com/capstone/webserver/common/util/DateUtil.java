@@ -1,4 +1,4 @@
-package com.capstone.webserver.util;
+package com.capstone.webserver.common.util;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

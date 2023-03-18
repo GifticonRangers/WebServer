@@ -3,8 +3,15 @@ package com.capstone.webserver.entity.user;
 import com.capstone.webserver.entity.user.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -13,7 +20,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,4 +52,43 @@ public class User {
     @Column
     @Enumerated(EnumType.STRING)
     private Gender genderUser;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+
+        authorities.add(new SimpleGrantedAuthority(typeUser.toString()));
+
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return pwUser;
+    }
+
+    @Override
+    public String getUsername() {
+        return idUser;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

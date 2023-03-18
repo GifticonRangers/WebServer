@@ -5,6 +5,7 @@ import com.capstone.webserver.entity.user.User;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public interface UserRepository extends CrudRepository<User, Long> {
 
@@ -15,7 +16,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
     ArrayList<User> findAllByTypeUser(Role type);
 
     /* 해당 IdUser 유저 반환 */
-    User findByIdUser(String id);
+    Optional<User> findByIdUser(String id);
 
     /* 해당 아이디와 역할 찾는 것 */
     User findByIdAndTypeUser(Long id, Role typeUser);
