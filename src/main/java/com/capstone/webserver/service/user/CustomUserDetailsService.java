@@ -8,8 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 
 @Slf4j
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -18,7 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info(username);
         return userRepository.findByIdUser(username)
                 .map(this::createUserDetails)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
@@ -26,11 +28,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     // 해당하는 User 의 데이터가 존재한다면 UserDetails 객체로 만들어서 리턴
     private UserDetails createUserDetails(User user) {
-        return org.springframework.security.core.userdetails.User
-                .builder()
+        return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
-                .roles(user.getTypeUser().toString())
+                .roles(user.getAuthorities().toString())
                 .build();
     }
 }

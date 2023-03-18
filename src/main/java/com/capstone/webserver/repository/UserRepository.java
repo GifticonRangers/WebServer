@@ -16,7 +16,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
     ArrayList<User> findAllByTypeUser(Role type);
 
     /* 해당 IdUser 유저 반환 */
-    Optional<User> findByIdUser(String id);
+    Optional<User> findByIdUser(String idUser);
 
     /* 해당 아이디와 역할 찾는 것 */
     User findByIdAndTypeUser(Long id, Role typeUser);
