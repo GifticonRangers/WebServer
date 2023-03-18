@@ -16,24 +16,24 @@ public class UserService {
     UserRepository userRepository;
 
     /* 모든 유저 반환 */
-    public ArrayList<User> findAllUser() {
+    public ArrayList<User> showAllUser() {
         log.info("Request show: All");
         return userRepository.findAll();
     }
 
     /* 타입별 유저 반환 */
-    public ArrayList<User> findAllUserByTypeUser(String type) {
+    public ArrayList<User> showAllUserByTypeUser(String type) {
         log.info("Request show: {}", type);
         Role role;
 
         switch (type){
-            case "admin":
+            case "ADMIN":
                 role = Role.ADMIN;
                 break;
-            case "professor":
+            case "PROFESSOR":
                 role = Role.PROFESSOR;
                 break;
-            case "student":
+            case "STUDENT":
                 role = Role.STUDENT;
                 break;
             default:
@@ -45,8 +45,8 @@ public class UserService {
     }
 
     /* id에 따른 유저 반환 */
-    public User findUserById(Long id) {
-        User user = userRepository.findById(id).orElse(null);
+    public User showUserByIdUser(String id) {
+        User user = userRepository.findByIdUser(id).orElse(null);
 
         if(user != null)
             log.info("Request show: {}", user.toString());

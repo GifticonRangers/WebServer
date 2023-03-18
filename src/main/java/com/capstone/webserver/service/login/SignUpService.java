@@ -34,6 +34,6 @@ public class SignUpService {
 
     /* id 중복 체크 */
     public Boolean checkDuplicateId(String id) {
-        return userRepository.findByIdUser(id) == null;
+        return userRepository.findByIdUser(id).orElse(null) == null;
     }
 }

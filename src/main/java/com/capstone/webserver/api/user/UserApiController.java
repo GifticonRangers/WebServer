@@ -1,5 +1,7 @@
 package com.capstone.webserver.api.user;
 
+import com.capstone.webserver.dto.UserDTO;
+import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,9 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -38,9 +38,9 @@ public class UserApiController {
             @ApiResponse(responseCode = "400",
                          description = "bad request operation")
     })
-    @GetMapping("/api/user/show")
-    public ResponseEntity<ArrayList<User>> findAllUser() {
-        ArrayList<User> user = userService.findAllUser();
+    @GetMapping("/api/user/showAllUser")
+    public ResponseEntity<ArrayList<User>> showAllUser() {
+        ArrayList<User> user = userService.showAllUser();
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(user);
@@ -59,9 +59,9 @@ public class UserApiController {
             @ApiResponse(responseCode = "400",
                          description = "bad request operation")
     })
-    @GetMapping("/api/user/show/{type}")
-    public ResponseEntity<ArrayList<User>> findAllUserByTypeUser(@PathVariable String type) {
-        ArrayList<User> user = userService.findAllUserByTypeUser(type);
+    @PostMapping("/api/user/showAllUserByTypeUser")
+    public ResponseEntity<ArrayList<User>> showAllUserByTypeUser(@RequestBody UserDTO.UserForm dto) {
+        ArrayList<User> user = userService.showAllUserByTypeUser(Role.values()[dto.getType()].toString());
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(user);
@@ -80,9 +80,9 @@ public class UserApiController {
             @ApiResponse(responseCode = "400",
                          description = "bad request operation")
     })
-    @GetMapping("/api/user/show/{id}")
-    public ResponseEntity<User> findUserById(@PathVariable Long id) {
-        User user = userService.findUserById(id);
+    @PostMapping("/api/user/showUserByIdUser")
+    public ResponseEntity<User> showUserByIdUser(@RequestBody UserDTO.UserForm dto) {
+        User user = userService.showUserByIdUser(dto.getIdUser());
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(user);
