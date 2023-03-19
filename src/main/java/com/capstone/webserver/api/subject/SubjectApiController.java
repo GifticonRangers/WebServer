@@ -37,7 +37,7 @@ public class SubjectApiController {
      * permission: Admin
      */
 
-    @Operation(summary = "Subject 등록",
+    @Operation(summary = "Update Subject DB",
                description = "subject.json을 읽어와 DB에 등록")
     @GetMapping("/api/subject/updateSubject")
     public ResponseEntity update() throws FileNotFoundException {
@@ -49,7 +49,7 @@ public class SubjectApiController {
      * API Request: Subject 조회
      * permission: All user
      */
-    @Operation(summary = "Subject 조회",
+    @Operation(summary = "Show Subject DB",
                description = "subject DB에서 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -70,7 +70,7 @@ public class SubjectApiController {
      * API Request: 유저별 Subject 조회
      * permission: All user
      */
-    @Operation(summary = "특정 유저가 듣는 강좌 조회",
+    @Operation(summary = "Search Subject for a specific User",
             description = "Auditor DB에서 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -91,7 +91,7 @@ public class SubjectApiController {
      * API Request: 특정 과목별 수강생 조회
      * permission: Professor
      */
-    @Operation(summary = "특정 과목별 수강생 조회",
+    @Operation(summary = "Search User by specific Subject",
             description = "Auditor DB에서 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",

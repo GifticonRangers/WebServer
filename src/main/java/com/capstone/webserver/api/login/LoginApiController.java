@@ -25,8 +25,9 @@ public class LoginApiController {
      * API Request: 로그인
      * permission: All User
      */
-    @Operation(summary = "login page",
-               description = "로그인에 필요한 정보를 입력")
+    @Operation(summary = "Login Page",
+               description = "로그인 페이지\n\n"
+                            + "idUser(학번/교번), pwUser 입력 필요")
     @PostMapping("/api/login/login")
     public ResponseEntity<TokenInfoDTO> login(@RequestBody UserDTO.UserForm dto) {
         TokenInfoDTO token = loginService.login(dto);

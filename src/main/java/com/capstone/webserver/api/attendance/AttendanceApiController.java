@@ -21,8 +21,9 @@ public class AttendanceApiController {
     AttendanceService attendanceService;
 
 
-    @Operation(summary = "출결현황 등록",
-            description = "강좌를 듣는 수강생의 출결현황 등록")
+    @Operation(summary = "Create Attendance List",
+            description = "강좌에 대한 출결현황 테이블 구성\n\n"
+                        + "idUser(교수 기본키값), idSubject(강좌 기본키값) 입력 필요")
     @PostMapping("/api/attendance/createAttendanceList")
     public ResponseEntity<ArrayList<Attendance>> createAttendanceList(@RequestBody UserDTO.UserSubjectInfoForm dto) {
         ArrayList<Attendance> attendanceArrayList = attendanceService.createAttendanceList(dto.getIdSubject(), dto.getIdUser());
@@ -32,8 +33,9 @@ public class AttendanceApiController {
                 .body(attendanceArrayList);
     }
 
-    @Operation(summary = "출결현황 수정",
-            description = "수강생의 출석현황 수정")
+    @Operation(summary = "Update Attendance State",
+            description = "수강생의 출석현황 수정\n\n"
+                        + "dateAttendance, weekAttendance, timeAttendance, stateAttendance 입력 필요")
     @PostMapping("/api/attendance/updateAttendance")
     public ResponseEntity<Attendance> updateAttendance(@RequestBody AttendanceDTO.AttendanceForm dto) {
         Attendance attendance = attendanceService.updateAttendance(dto);
@@ -43,8 +45,9 @@ public class AttendanceApiController {
                 .body(attendance);
     }
 
-    @Operation(summary = "차시 변경",
-            description = "특정 주차의 차시 변경")
+    @Operation(summary = "Change Time",
+            description = "특정 주차의 차시 변경\n\n"
+                        + "weekAttendance, timeAttendance, idSubject(강좌 기본키값) 입력 필요")
     @PostMapping("/api/attendance/showAttendanceByTime")
     public ResponseEntity<ArrayList<Attendance>> showAttendanceByTime(@RequestBody AttendanceDTO.AttendanceForm dto) {
         ArrayList<Attendance> attendance = attendanceService.showAttendanceByTime(dto);
@@ -54,8 +57,9 @@ public class AttendanceApiController {
                 .body(attendance);
     }
 
-    @Operation(summary = "출석 정보 확인",
-            description = "유저의 특정 과목의 출석 정보 열람")
+    @Operation(summary = "Check Attendance State",
+            description = "유저의 특정 과목 출석 정보 열람\n\n"
+                        + "idStudent(학생 기본키값), idSubject(강좌 기본키값) 입력 필요")
     @PostMapping("/api/attendance/showAttendanceByUser")
     public ResponseEntity<ArrayList<Attendance>> showAttendanceByUser(@RequestBody AttendanceDTO.AttendanceForm dto) {
         ArrayList<Attendance> attendance = attendanceService.showAttendanceByUser(dto);

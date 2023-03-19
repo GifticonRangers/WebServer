@@ -21,8 +21,9 @@ public class AuditorApiController {
     @Autowired
     AuditorService auditorService;
 
-    @Operation(summary = "수강생 생성",
-               description = "수강생 생성에 관련")
+    @Operation(summary = "Create Auditor",
+               description = "수강생 생성\n\n"
+                            + "idUser(유저 기본키값), idSubject(강좌 기본키값) 입력 필요")
     @PostMapping("/api/user/auditor/create")
     public ResponseEntity<Auditor> create(@RequestBody UserDTO.UserSubjectInfoForm dto) {
         Auditor auditor = auditorService.create(dto);

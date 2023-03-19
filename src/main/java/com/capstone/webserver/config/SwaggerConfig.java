@@ -48,8 +48,8 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
 
         Info info = new Info()
-                .title("Spring Boot API Example")
-                .description("Spring Boot API 예시 프로젝트입니다.")
+                .title("PBBS Attendance System Example")
+                .description("INU Capstone-designs, PBBS Attendance System Example")
                 .version("v0.0.1");
 
         // SecuritySecheme명

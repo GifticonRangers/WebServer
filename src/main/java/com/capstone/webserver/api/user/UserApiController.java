@@ -29,8 +29,8 @@ public class UserApiController {
      * API Request: 모든 유저 정보 요청
      * permission: ADMIN
      */
-    @Operation(summary = "all-user info",
-               description = "전체 유저 정보를 요청")
+    @Operation(summary = "Show all User Info",
+               description = "전체 유저 정보")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                          description = "successful operation",
@@ -50,8 +50,9 @@ public class UserApiController {
      * API Request: 타입별 모든 유저 정보 요청
      * permission: ADMIN
      */
-    @Operation(summary = "all-user info by type",
-               description = "타입별 전체 유저 정보를 요청")
+    @Operation(summary = "Show all User Info by Type",
+               description = "타입별 유저 정보\n\n"
+                            + "type(역할) 입력 필요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                          description = "successful operation",
@@ -71,8 +72,9 @@ public class UserApiController {
      * API Request: 특정 유저 정보 요청
      * permission: ADMIN
      */
-    @Operation(summary = "user info by ID",
-               description = "아이디에 해당하는 유저 정보를 요청")
+    @Operation(summary = "Show User Info by ID",
+               description = "아이디에 해당하는 유저 정보"
+                            + "id(기본키값) 입력 필요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                          description = "successful operation",

@@ -27,8 +27,9 @@ public class SignUpApiController {
      * API Request: 회원가입
      * permission: All User
      */
-    @Operation(summary = "sign-up page",
-               description = "회원가입에 필요한 정보를 입력")
+    @Operation(summary = "Sing-Up Page",
+               description = "회원가입 페이지\n\n"
+                            + "idUser(학번/교번), pwUser, name, phone, email, department, type(역할), gender 입력 필요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "successful operation",
@@ -50,8 +51,8 @@ public class SignUpApiController {
      * API Request: id 중복 체크 확인
      * permission: ADMIN
      */
-    @Operation(summary = "Check duplicated-id",
-               description = "ID 중복 체크 확인, 회원가입에서 바로 사용")
+    @Operation(summary = "Confirm ID duplication",
+               description = "회원가입 시 바로 동작하므로 사용해보지 않아도 됨.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "successful operation"),
