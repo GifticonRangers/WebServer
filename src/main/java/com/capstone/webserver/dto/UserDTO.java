@@ -19,22 +19,22 @@ public class UserDTO {
         @Schema(description = "기본키")
         private Long id;
 
-        @Schema(description = "학번/교번")
+        @Schema(description = "학번/교번", example = "학번/교번")
         private String idUser;
 
-        @Schema(description = "비밀번호")
+        @Schema(description = "비밀번호", example = "비밀번호")
         private String pwUser;
 
-        @Schema(description = "이름")
+        @Schema(description = "이름", example = "이름")
         private String name;
 
-        @Schema(description = "전화번호")
+        @Schema(description = "전화번호", example = "010-XXXX-XXXX")
         private String phone;
 
-        @Schema(description = "이메일")
+        @Schema(description = "이메일", example = "aaa@inu.ac.kr")
         private String email;
 
-        @Schema(description = "학과")
+        @Schema(description = "학과", example = "ㅇㅇㅇ과")
         private String department;
 
         @Schema(description = "유저 종류")

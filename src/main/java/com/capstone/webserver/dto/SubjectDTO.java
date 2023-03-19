@@ -18,37 +18,37 @@ public class SubjectDTO {
     @ToString
     @Getter
     public static class SubjectForm {
-        @Schema(description = "아이디")
+        @Schema(description = "기본키")
         private Long id;
 
-        @Schema(description = "강좌의 해당 년도")
+        @Schema(description = "강좌 개설연도", example = "강좌 개설연도")
         private String yearSubject;
 
-        @Schema(description = "강좌의 해당 학기")
+        @Schema(description = "강좌 개설학기", example = "강좌 개설학기")
         private String semesterSubject;
 
-        @Schema(description = "학수번호")
+        @Schema(description = "학수번호", example = "학수번호")
         private String idSubject;
 
-        @Schema(description = "단과대학")
+        @Schema(description = "단과대학", example = "단과대학")
         private String univSubject;
 
-        @Schema(description = "학과/부")
+        @Schema(description = "학과/부", example = "학과/부")
         private String majorSubject;
 
-        @Schema(description = "강좌 종류")
+        @Schema(description = "강좌 종류", example = "전공심화/전공핵심/일반선택 등")
         private String typeSubject;
 
-        @Schema(description = "강좌명")
+        @Schema(description = "강좌명", example = "강좌명")
         private String nameSubject;
 
-        @Schema(description = "교수명")
+        @Schema(description = "교수명", example = "교수명")
         private String profSubject;
 
-        @Schema(description = "시간표")
+        @Schema(description = "시간표", example = "시간표")
         private String timeSubject;
 
-        @Schema(description = "학점")
+        @Schema(description = "학점", example = "이수학점")
         private String creditSubject;
     }
 }

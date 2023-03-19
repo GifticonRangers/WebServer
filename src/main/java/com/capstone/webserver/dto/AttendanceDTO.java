@@ -22,13 +22,13 @@ public class AttendanceDTO {
         @Schema(description = "기본키값")
         private Long id;
 
-        @Schema(description = "출석 날짜")
+        @Schema(description = "출석 날짜", example = "날짜")
         private String dateAttendance;
 
-        @Schema(description = "출석 주차")
+        @Schema(description = "출석 주차", example = "주차")
         private String weekAttendance;
 
-        @Schema(description = "출석 차시")
+        @Schema(description = "출석 차시", example = "차시")
         private String timeAttendance;
 
         @Schema(description = "출석 상태")
