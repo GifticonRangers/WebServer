@@ -35,7 +35,7 @@ public class AttendanceApiController {
 
     @Operation(summary = "Update Attendance State",
             description = "수강생의 출석현황 수정\n\n"
-                        + "dateAttendance, weekAttendance, timeAttendance, stateAttendance 입력 필요")
+                        + "id(기본키값), stateAttendance 입력 필요")
     @PostMapping("/api/attendance/updateAttendance")
     public ResponseEntity<Attendance> updateAttendance(@RequestBody AttendanceDTO.AttendanceForm dto) {
         Attendance attendance = attendanceService.updateAttendance(dto);
@@ -67,5 +67,17 @@ public class AttendanceApiController {
         return ResponseEntity
                 .status(attendance != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(attendance);
+    }
+
+    @Operation(summary = "Check students who participated in attendance",
+            description = "출결에 참여한 학생 수 반환\n\n"
+                    + "weekAttendance, timeAttendance, idSubject(강좌 기본키값) 입력 필요")
+    @PostMapping("/api/attendance/showAttendanceInfo")
+    public ResponseEntity<AttendanceDTO.AttendanceInfoForm> showAttendanceInfo(@RequestBody AttendanceDTO.AttendanceForm dto) {
+        AttendanceDTO.AttendanceInfoForm attendanceInfo = attendanceService.showAttendanceInfo(dto);
+
+        return ResponseEntity
+                .status(attendanceInfo != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(attendanceInfo);
     }
 }

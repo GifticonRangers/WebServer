@@ -5,6 +5,8 @@ import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.entity.attendance.State;
 import com.capstone.webserver.entity.subject.Subject;
 import com.capstone.webserver.entity.user.Auditor;
+import com.capstone.webserver.entity.user.Role;
+import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.repository.AttendanceRepository;
 import com.capstone.webserver.repository.AuditorRepository;
 import com.capstone.webserver.repository.SubjectRepository;
@@ -114,5 +116,43 @@ public class AttendanceService {
         }
 
         return attendanceRepository.findAllByIdStudentAndIdSubject(idStudent, idSubject);
+    }
+
+    public AttendanceDTO.AttendanceInfoForm showAttendanceInfo(AttendanceDTO.AttendanceForm dto) {
+        ArrayList<Attendance> attendances = attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(dto.getWeekAttendance(), dto.getTimeAttendance(), dto.getIdSubject());
+        AttendanceDTO.AttendanceInfoForm attendanceInfoForm = AttendanceDTO.AttendanceInfoForm
+                                                                                        .builder()
+                                                                                        .ATTENDANCE(0)
+                                                                                        .LATE(0)
+                                                                                        .ABSENCE(0)
+                                                                                        .PUBLIC_ABSENCE(0)
+                                                                                        .build();
+
+        for (Attendance attendance: attendances) {
+            User user = userRepository.findById(attendance.getIdStudent()).orElse(null);
+
+            if (user == null || user.getTypeUser() == Role.PROFESSOR)
+                continue;
+
+            switch (attendance.getStateAttendance()) {
+                case ATTENDANCE:
+                    attendanceInfoForm.plusAttendance();
+                    break;
+
+                case LATE:
+                    attendanceInfoForm.plusLate();
+                    break;
+
+                case ABSENCE:
+                    attendanceInfoForm.plusAbsence();
+                    break;
+
+                case PUBLIC_ABSENCE:
+                    attendanceInfoForm.plusPublicAbsence();
+                    break;
+            }
+        }
+
+        return attendanceInfoForm;
     }
 }

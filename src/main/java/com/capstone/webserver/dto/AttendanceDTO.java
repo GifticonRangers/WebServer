@@ -2,16 +2,8 @@ package com.capstone.webserver.dto;
 
 import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.entity.attendance.State;
-import com.capstone.webserver.entity.user.Gender;
-import com.capstone.webserver.entity.user.Role;
-import com.capstone.webserver.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-import javax.persistence.Column;
+import lombok.*;
 
 public class AttendanceDTO {
     @AllArgsConstructor
@@ -55,5 +47,23 @@ public class AttendanceDTO {
                     .idSubject(idSubject)
                     .build();
         }
+    }
+
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ToString
+    @Getter
+    @Builder
+    public static class AttendanceInfoForm{
+        private int ATTENDANCE;
+        private int LATE;
+        private int ABSENCE;
+        private int PUBLIC_ABSENCE;
+
+        public void plusAttendance() { ATTENDANCE++; }
+        public void plusLate() { LATE++; }
+        public void plusAbsence() { ABSENCE++; }
+        public void plusPublicAbsence() { PUBLIC_ABSENCE++; }
     }
 }
