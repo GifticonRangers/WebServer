@@ -1,8 +1,13 @@
 package com.capstone.webserver.common.util;
 
+import com.capstone.webserver.dto.SubjectDTO;
+import com.capstone.webserver.entity.attendance.Attendance;
+import com.capstone.webserver.entity.subject.Subject;
+
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class SubjectTimeUtil {
+public class SubjectUtil {
     public static Map<String, ArrayList<String>> splitSubjectTime(String time){
         /*
          * 시간표 자르는 로직
@@ -107,5 +112,20 @@ public class SubjectTimeUtil {
         }
 
         return timeMap;
+    }
+
+
+    public static ArrayList<SubjectDTO.TodaySubjectForm> createTodaySubjectList(ArrayList<Attendance> attendanceArrayList, ArrayList<Subject> subjectArrayList) {
+        ArrayList<SubjectDTO.TodaySubjectForm> todaySubjectForms = new ArrayList<SubjectDTO.TodaySubjectForm>();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date nowDate = new Date();
+        String date = sdf.format(nowDate);
+
+        for (Attendance attendance: attendanceArrayList) {
+
+        }
+
+        return null;
     }
 }

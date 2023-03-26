@@ -4,10 +4,7 @@ import com.capstone.webserver.entity.user.Gender;
 import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 
@@ -50,5 +47,36 @@ public class SubjectDTO {
 
         @Schema(description = "학점", example = "이수학점")
         private String creditSubject;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ToString
+    @Getter
+    @Builder
+    public static class TodaySubjectForm {
+        @Schema(description = "기본키")
+        private Long id;
+
+        @Schema(description = "학수번호", example = "학수번호")
+        private String idSubject;
+
+        @Schema(description = "단과대학", example = "단과대학")
+        private String univSubject;
+
+        @Schema(description = "학과/부", example = "학과/부")
+        private String majorSubject;
+
+        @Schema(description = "강좌명", example = "강좌명")
+        private String nameSubject;
+
+        @Schema(description = "교수명", example = "교수명")
+        private String profSubject;
+
+        @Schema(description = "강의실 위치", example = "101")
+        private String locationSubject;
+
+        @Schema(description = "주차", example = "1")
+        private String weekSubject;
     }
 }

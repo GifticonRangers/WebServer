@@ -9,7 +9,7 @@ public class DateUtil {
         int day = (Objects.equals(semester, "1학기") ? 2 : 1);
         Calendar startDay = new GregorianCalendar(year, month, day);
 
-        Map<String, ArrayList<String>> splitSubjectTime = SubjectTimeUtil.splitSubjectTime(time);
+        Map<String, ArrayList<String>> splitSubjectTime = SubjectUtil.splitSubjectTime(time);
 
         /*
          * 1단계: 요일 배열 만들기

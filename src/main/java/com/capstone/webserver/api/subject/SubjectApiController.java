@@ -107,4 +107,25 @@ public class SubjectApiController {
                 .status(users != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(users);
     }
+
+    /*
+     * API Request: 오늘 날짜의 과목 조회
+     * permission: All
+     */
+    @Operation(summary = "Search Subject by today Subject",
+            description = "id(유저의 기본키값) 필요")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "successful operation",
+                    content = @Content(schema = @Schema(implementation = Subject.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "bad request operation")
+    })
+    @PostMapping("/api/subject/showTodaySubjectByUserId")
+    public ResponseEntity<ArrayList<SubjectDTO.TodaySubjectForm>> showTodaySubjectByUserId(@RequestBody UserDTO.UserForm dto) {
+        ArrayList<SubjectDTO.TodaySubjectForm> subjects = subjectService.showTodaySubjectByUserId(dto);
+        return ResponseEntity
+                .status(subjects != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(subjects);
+    }
 }
