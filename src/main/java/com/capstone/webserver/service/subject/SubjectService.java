@@ -80,25 +80,7 @@ public class SubjectService {
         return subjects;
     }
 
-    public ArrayList<User> showUserBySubjectId(SubjectDTO.SubjectForm dto) {
-        Long id = dto.getId();
 
-        if (id == null) {
-            log.error("Error: Not found id");
-            return null;
-        }
-
-        ArrayList<Auditor> auditors = auditorRepository.findAllByIdSubject(id);
-        ArrayList<User> users = new ArrayList<User>();
-
-        for (Auditor auditor: auditors) {
-            User user = userRepository.findByIdAndTypeUser(auditor.getIdUser(), Role.STUDENT);
-            if(user != null)
-                users.add(user);
-        }
-
-        return users;
-    }
 
     public ArrayList<SubjectDTO.TodaySubjectForm> showTodaySubjectByUserId(UserDTO.UserForm dto) {
         ArrayList<Attendance> attendanceArrayList = attendanceRepository.findAllByIdStudent(dto.getId());

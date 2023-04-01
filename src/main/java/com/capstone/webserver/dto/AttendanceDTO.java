@@ -66,4 +66,18 @@ public class AttendanceDTO {
         public void plusAbsence() { ABSENCE++; }
         public void plusPublicAbsence() { PUBLIC_ABSENCE++; }
     }
+
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ToString
+    @Getter
+    @Builder
+    public static class DateForm {
+        private String year;
+        private String month;
+        private String day;
+        private String week;
+        private String time;
+    }
 }

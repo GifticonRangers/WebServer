@@ -1,7 +1,10 @@
 package com.capstone.webserver.service.user;
 
+import com.capstone.webserver.dto.SubjectDTO;
+import com.capstone.webserver.entity.user.Auditor;
 import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;
+import com.capstone.webserver.repository.AuditorRepository;
 import com.capstone.webserver.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,9 @@ import java.util.ArrayList;
 public class UserService {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    AuditorRepository auditorRepository;
 
     /* 모든 유저 반환 */
     public ArrayList<User> showAllUser() {
@@ -45,8 +51,8 @@ public class UserService {
     }
 
     /* id에 따른 유저 반환 */
-    public User showUserByIdUser(String id) {
-        User user = userRepository.findByIdUser(id).orElse(null);
+    public User showUserById(Long id) {
+        User user = userRepository.findById(id).orElse(null);
 
         if(user != null)
             log.info("Request show: {}", user.toString());
@@ -54,5 +60,25 @@ public class UserService {
             log.error("Invalid request: Not found id");
 
         return user;
+    }
+
+    public ArrayList<User> showUserBySubjectId(SubjectDTO.SubjectForm dto) {
+        Long id = dto.getId();
+
+        if (id == null) {
+            log.error("Error: Not found id");
+            return null;
+        }
+
+        ArrayList<Auditor> auditors = auditorRepository.findAllByIdSubject(id);
+        ArrayList<User> users = new ArrayList<User>();
+
+        for (Auditor auditor: auditors) {
+            User user = userRepository.findByIdAndTypeUser(auditor.getIdUser(), Role.STUDENT);
+            if(user != null)
+                users.add(user);
+        }
+
+        return users;
     }
 }

@@ -1,6 +1,7 @@
 package com.capstone.webserver.service.attendance;
 
 import com.capstone.webserver.dto.AttendanceDTO;
+import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.entity.attendance.State;
 import com.capstone.webserver.entity.subject.Subject;
@@ -103,7 +104,16 @@ public class AttendanceService {
             return null;
         }
 
-        return attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(week, time, idSubject);
+        ArrayList<Attendance> attendances = new ArrayList<Attendance>();
+
+        ArrayList<Attendance> target = attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(week, time, idSubject);
+
+        for (Attendance attendance: target)
+            if (userRepository.findById(attendance.getIdStudent()).orElse(null).getTypeUser() == Role.STUDENT)
+                attendances.add(attendance);
+
+
+        return attendances;
     }
 
     public ArrayList<Attendance> showAttendanceByUser(AttendanceDTO.AttendanceForm dto) {
@@ -131,9 +141,6 @@ public class AttendanceService {
         for (Attendance attendance: attendances) {
             User user = userRepository.findById(attendance.getIdStudent()).orElse(null);
 
-            if (user == null || user.getTypeUser() == Role.PROFESSOR)
-                continue;
-
             switch (attendance.getStateAttendance()) {
                 case ATTENDANCE:
                     attendanceInfoForm.plusAttendance();
@@ -154,5 +161,26 @@ public class AttendanceService {
         }
 
         return attendanceInfoForm;
+    }
+
+    public ArrayList<AttendanceDTO.DateForm> showAttendanceTimeList(UserDTO.UserSubjectInfoForm dto) {
+        ArrayList<Attendance> attendances = attendanceRepository.findAllByIdStudentAndIdSubject(dto.getIdUser(), dto.getIdSubject());
+
+        ArrayList<AttendanceDTO.DateForm> timeList = new ArrayList<AttendanceDTO.DateForm>();
+
+        for (Attendance attendance: attendances) {
+            String[] times = attendance.getDateAttendance().split("-");
+            timeList.add(
+                    AttendanceDTO.DateForm.builder()
+                            .year(times[0])
+                            .month(times[1])
+                            .day(times[2])
+                            .week(attendance.getWeekAttendance())
+                            .time(attendance.getTimeAttendance())
+                            .build()
+            );
+        }
+
+        return timeList;
     }
 }

@@ -1,5 +1,6 @@
 package com.capstone.webserver.api.user;
 
+import com.capstone.webserver.dto.SubjectDTO;
 import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;
@@ -83,10 +84,33 @@ public class UserApiController {
                          description = "bad request operation")
     })
     @PostMapping("/api/user/showUserByIdUser")
-    public ResponseEntity<User> showUserByIdUser(@RequestBody UserDTO.UserForm dto) {
-        User user = userService.showUserByIdUser(dto.getIdUser());
+    public ResponseEntity<User> showUserById(@RequestBody UserDTO.UserForm dto) {
+        User user = userService.showUserById(dto.getId());
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(user);
     }
+
+    /*
+     * API Request: 특정 과목별 수강생 조회
+     * permission: Professor
+     */
+    @Operation(summary = "Search User by specific Subject",
+            description = "Auditor DB에서 조회"
+                        + "id(기본키값) 입력 필요")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "successful operation",
+                    content = @Content(schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "bad request operation")
+    })
+    @PostMapping("/api/user/showUserBySubjectId")
+    public ResponseEntity<ArrayList<User>> showUserBySubjectId(@RequestBody SubjectDTO.SubjectForm dto) {
+        ArrayList<User> users = userService.showUserBySubjectId(dto);
+        return ResponseEntity
+                .status(users != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(users);
+    }
+
 }

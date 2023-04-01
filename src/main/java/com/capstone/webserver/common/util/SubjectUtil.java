@@ -3,12 +3,17 @@ package com.capstone.webserver.common.util;
 import com.capstone.webserver.dto.SubjectDTO;
 import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.entity.subject.Subject;
+import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+
+@Slf4j
 public class SubjectUtil {
-    public static Map<String, ArrayList<String>> splitSubjectTime(String time){
+    public static Map<String, ArrayList<String>> splitSubjectTime(String time) {
         /*
          * 시간표 자르는 로직
          * 예시
@@ -41,9 +46,7 @@ public class SubjectUtil {
             if (time.charAt(i) == ']') {
                 timeList.add(temp);
                 temp = "";
-            }
-
-            else if(time.charAt(i) != '[')
+            } else if (time.charAt(i) != '[')
                 temp += time.charAt(i);
         }
 
@@ -60,7 +63,7 @@ public class SubjectUtil {
             time2dList.add(new ArrayList<String>());
 
             String[] strList = timeList.get(i).split(",");
-            for(String str: strList)
+            for (String str : strList)
                 time2dList.get(i).add(str);
         }
 
@@ -89,9 +92,9 @@ public class SubjectUtil {
          * -> {"월": ["6"], "금": ["7-8A"], "수": ["3"]}
          */
         Map<String, ArrayList<String>> timeMap = new HashMap<String, ArrayList<String>>();
-        for (String str : timeList){
+        for (String str : timeList) {
             String day = String.valueOf(str.charAt(0));
-            if(!timeMap.containsKey(day))
+            if (!timeMap.containsKey(day))
                 timeMap.put(day, new ArrayList<String>());
 
             time = str.substring(1);
@@ -104,10 +107,8 @@ public class SubjectUtil {
                 if (time.charAt(i) == ')') {
                     timeMap.get(day).add(temp);
                     temp = "";
-                }
-
-                else
-                    temp += time.charAt(i);
+                } else
+                    temp += (time.charAt(i) == '-' ? "~" : time.charAt(i));
             }
         }
 
@@ -118,12 +119,65 @@ public class SubjectUtil {
     public static ArrayList<SubjectDTO.TodaySubjectForm> createTodaySubjectList(ArrayList<Attendance> attendanceArrayList, ArrayList<Subject> subjectArrayList) {
         ArrayList<SubjectDTO.TodaySubjectForm> todaySubjectForms = new ArrayList<SubjectDTO.TodaySubjectForm>();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date nowDate = new Date();
-        String date = sdf.format(nowDate);
+        LocalDate now = LocalDate.now();
 
-        for (Attendance attendance: attendanceArrayList) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+        String date = now.format(formatter);
+
+        HashSet<Long> set = new HashSet<Long>();
+
+        for (Attendance attendance : attendanceArrayList) {
+            if (attendance.getDateAttendance().contains(date)) {
+                if (!set.contains(attendance.getIdSubject())) {
+                    Subject subject = findById(subjectArrayList, attendance.getIdSubject());
+                    if (subject != null) {
+                        todaySubjectForms.add(SubjectDTO.TodaySubjectForm
+                                .builder()
+                                .idSubject(attendance.getIdSubject())
+                                .nameSubject(subject.getNameSubject())
+                                .timeSubject(attendance.getDateAttendance().split("-")[4])
+                                .weekSubject(attendance.getWeekAttendance())
+                                .profSubject(subject.getProfSubject())
+                                .locationSubject(splitLocation(subject.getTimeSubject(), attendance.getDateAttendance().split("-")[3]))
+                                .build());
+                        set.add(attendance.getIdSubject());
+                    }
+                }
+            }
+        }
+
+        return todaySubjectForms;
+    }
+
+    private static Subject findById(ArrayList<Subject> subjectArrayList, Long idSubject) {
+        for (Subject subject : subjectArrayList)
+            if (Objects.equals(subject.getId(), idSubject))
+                return subject;
+
+        return null;
+    }
+
+    private static String splitLocation(String time, String day) {
+        time = time.replace(" ", "");
+
+
+        boolean isOpen = false;
+        String temp = "";
+        ArrayList<String> timeList = new ArrayList<String>();
+        for (int i = 0; i < time.length(); i++) {
+            if (time.charAt(i) == ']') {
+                timeList.add(temp);
+                temp = "";
+            } else if (time.charAt(i) != '[')
+                temp += time.charAt(i);
+        }
+
+        for (String str : timeList) {
+            if (str.contains(day)) {
+                int idx = str.indexOf(':');
+                return str.substring(0, idx);
+            }
         }
 
         return null;

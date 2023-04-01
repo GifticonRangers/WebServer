@@ -71,7 +71,8 @@ public class SubjectApiController {
      * permission: All user
      */
     @Operation(summary = "Search Subject for a specific User",
-            description = "Auditor DB에서 조회")
+            description = "Auditor DB에서 조회"
+                        + "id(유저의 기본키값) 필요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "successful operation",
@@ -85,27 +86,6 @@ public class SubjectApiController {
         return ResponseEntity
                 .status(subjects != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(subjects);
-    }
-
-    /*
-     * API Request: 특정 과목별 수강생 조회
-     * permission: Professor
-     */
-    @Operation(summary = "Search User by specific Subject",
-            description = "Auditor DB에서 조회")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "successful operation",
-                    content = @Content(schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "400",
-                    description = "bad request operation")
-    })
-    @PostMapping("/api/subject/showUserBySubjectId")
-    public ResponseEntity<ArrayList<User>> showUserBySubjectId(@RequestBody SubjectDTO.SubjectForm dto) {
-        ArrayList<User> users = subjectService.showUserBySubjectId(dto);
-        return ResponseEntity
-                .status(users != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
-                .body(users);
     }
 
     /*

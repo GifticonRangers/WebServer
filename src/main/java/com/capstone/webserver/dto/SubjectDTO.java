@@ -55,17 +55,11 @@ public class SubjectDTO {
     @Getter
     @Builder
     public static class TodaySubjectForm {
-        @Schema(description = "기본키")
-        private Long id;
+        @Schema(description = "강의 기본키", example = "강의 기본키")
+        private Long idSubject;
 
-        @Schema(description = "학수번호", example = "학수번호")
-        private String idSubject;
-
-        @Schema(description = "단과대학", example = "단과대학")
-        private String univSubject;
-
-        @Schema(description = "학과/부", example = "학과/부")
-        private String majorSubject;
+        @Schema(description = "강의 시작 시간", example = "강의 시작 시간")
+        private String timeSubject;
 
         @Schema(description = "강좌명", example = "강좌명")
         private String nameSubject;
