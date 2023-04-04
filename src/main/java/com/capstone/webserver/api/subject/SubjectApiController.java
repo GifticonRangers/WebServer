@@ -108,4 +108,21 @@ public class SubjectApiController {
                 .status(subjects != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(subjects);
     }
+
+    @Operation(summary = "Search Subject by schedule Subject",
+            description = "id(유저의 기본키값) 필요")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "successful operation",
+                    content = @Content(schema = @Schema(implementation = SubjectDTO.ScheduleSubjectForm.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "bad request operation")
+    })
+    @PostMapping("/api/subject/showScheduleSubjectByUserId")
+    public ResponseEntity<ArrayList<SubjectDTO.ScheduleSubjectForm>> showScheduleSubjectByUserId(@RequestBody UserDTO.UserForm dto) {
+        ArrayList<SubjectDTO.ScheduleSubjectForm> scheduleSubjectForms = subjectService.showScheduleSubjectByUserId(dto);
+        return ResponseEntity
+                .status(scheduleSubjectForms != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(scheduleSubjectForms);
+    }
 }

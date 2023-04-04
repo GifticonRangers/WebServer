@@ -1,5 +1,6 @@
 package com.capstone.webserver.service.subject;
 
+import com.capstone.webserver.common.util.DateUtil;
 import com.capstone.webserver.common.util.SubjectUtil;
 import com.capstone.webserver.dto.SubjectDTO;
 import com.capstone.webserver.dto.UserDTO;
@@ -22,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -44,7 +46,7 @@ public class SubjectService {
 //        Reader reader = new FileReader("D:\\INU-LECTURE\\WebServer\\src\\main\\resources\\json\\subject.json");
         Gson gson = new Gson();
         GetSubjectJSONModel subjects = gson.fromJson(reader, GetSubjectJSONModel.class);
-        for(Subject subject: subjects.getSubject()){
+        for (Subject subject : subjects.getSubject()) {
             subjectRepository.save(subject);
             log.info("Subject: {}", subject.toString());
         }
@@ -52,7 +54,7 @@ public class SubjectService {
 
 
     /* 모든 과목 반환 */
-    public ArrayList<Subject> show(){
+    public ArrayList<Subject> show() {
         log.info("Request show: All");
         return subjectRepository.findAll();
     }
@@ -69,7 +71,7 @@ public class SubjectService {
         ArrayList<Auditor> auditors = auditorRepository.findAllByIdUser(id);
         ArrayList<Subject> subjects = new ArrayList<Subject>();
 
-        for (Auditor auditor: auditors)
+        for (Auditor auditor : auditors)
             subjects.add(
                     subjectRepository
                             .findById(auditor.getIdSubject())
@@ -81,11 +83,48 @@ public class SubjectService {
     }
 
 
-
     public ArrayList<SubjectDTO.TodaySubjectForm> showTodaySubjectByUserId(UserDTO.UserForm dto) {
         ArrayList<Attendance> attendanceArrayList = attendanceRepository.findAllByIdStudent(dto.getId());
         ArrayList<Subject> subjectArrayList = showSubjectByUserId(dto);
 
         return SubjectUtil.createTodaySubjectList(attendanceArrayList, subjectArrayList);
+    }
+
+    public ArrayList<SubjectDTO.ScheduleSubjectForm> showScheduleSubjectByUserId(UserDTO.UserForm dto) {
+        Long id = dto.getId();
+
+        if (id == null) {
+            log.error("Error: Not found id");
+            return null;
+        }
+
+        ArrayList<Auditor> auditors = auditorRepository.findAllByIdUser(id);
+        ArrayList<SubjectDTO.ScheduleSubjectForm> scheduleSubjectForms = new ArrayList<SubjectDTO.ScheduleSubjectForm>();
+
+        for (Auditor auditor : auditors) {
+            Subject subject = subjectRepository.findById(auditor.getIdSubject()).orElse(null);
+            Map<String, Map<String, ArrayList<String>>> locationDayTime = SubjectUtil.splitLocationTime(subject.getTimeSubject());
+            for (String loc : locationDayTime.keySet())
+                for (String day : locationDayTime.get(loc).keySet()) {
+                    ArrayList<String> times = locationDayTime.get(loc).get(day);
+                    String startTime = times.get(0);
+                    String endTime = times.get(times.size()-1);
+
+                    scheduleSubjectForms.add(
+                            SubjectDTO.ScheduleSubjectForm
+                                    .builder()
+                                    .id(subject.getId())
+                                    .nameSubject(subject.getNameSubject())
+                                    .profSubject(subject.getProfSubject())
+                                    .locationSubject(loc)
+                                    .daySubject(day)
+                                    .startTimeSubject(DateUtil.getStartTime("("+startTime+")"))
+                                    .endTimeSubject(DateUtil.getEndTime("("+endTime+")"))
+                                    .build()
+                    );
+                }
+        }
+
+        return scheduleSubjectForms;
     }
 }
