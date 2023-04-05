@@ -1,14 +1,12 @@
 package com.capstone.webserver.dto;
 
+import com.capstone.webserver.entity.attendance.State;
 import com.capstone.webserver.entity.user.Auditor;
 import com.capstone.webserver.entity.user.Gender;
 import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 public class UserDTO {
     @AllArgsConstructor
@@ -76,5 +74,26 @@ public class UserDTO {
                     .idSubject(idSubject)
                     .build();
         }
+    }
+
+
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @ToString
+    @Getter
+    public static class UserAttendanceForm {
+        @Schema(description = "기본키")
+        private Long id;
+
+        @Schema(description = "학번/교번", example = "학번/교번")
+        private String idUser;
+
+        @Schema(description = "이름", example = "이름")
+        private String name;
+
+        @Schema(description = "출결", example = "출결")
+        private State state;
     }
 }

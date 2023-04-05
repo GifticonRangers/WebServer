@@ -1,5 +1,6 @@
 package com.capstone.webserver.api.user;
 
+import com.capstone.webserver.dto.AttendanceDTO;
 import com.capstone.webserver.dto.SubjectDTO;
 import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.user.Role;
@@ -113,4 +114,15 @@ public class UserApiController {
                 .body(users);
     }
 
+
+    @Operation(summary = "Show Time Attendance",
+            description = "특정 주차의 차시에 따른 출석 리스트 반환\n\n"
+                    + "weekAttendance, timeAttendance, idSubject(강좌 기본키값) 입력 필요")
+    @PostMapping("/api/user/showUserAttendanceBySubjectId")
+    public ResponseEntity<ArrayList<UserDTO.UserAttendanceForm>> showUserAttendanceBySubjectId(@RequestBody AttendanceDTO.AttendanceForm dto) {
+        ArrayList<UserDTO.UserAttendanceForm> userAttendanceForms = userService.showUserAttendanceBySubjectId(dto);
+        return ResponseEntity
+                .status(userAttendanceForms != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(userAttendanceForms);
+    }
 }

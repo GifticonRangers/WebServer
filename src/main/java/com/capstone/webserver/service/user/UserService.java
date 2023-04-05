@@ -1,9 +1,13 @@
 package com.capstone.webserver.service.user;
 
+import com.capstone.webserver.dto.AttendanceDTO;
 import com.capstone.webserver.dto.SubjectDTO;
+import com.capstone.webserver.dto.UserDTO;
+import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.entity.user.Auditor;
 import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;
+import com.capstone.webserver.repository.AttendanceRepository;
 import com.capstone.webserver.repository.AuditorRepository;
 import com.capstone.webserver.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +24,9 @@ public class UserService {
 
     @Autowired
     AuditorRepository auditorRepository;
+
+    @Autowired
+    AttendanceRepository attendanceRepository;
 
     /* 모든 유저 반환 */
     public ArrayList<User> showAllUser() {
@@ -80,5 +87,37 @@ public class UserService {
         }
 
         return users;
+    }
+
+    public ArrayList<UserDTO.UserAttendanceForm> showUserAttendanceBySubjectId(AttendanceDTO.AttendanceForm dto) {
+        String week = dto.getWeekAttendance();
+        String time = dto.getTimeAttendance();
+        Long idSubject = dto.getIdSubject();
+
+        if (week == null || time == null || idSubject == null) {
+            log.error("Error: Not found data");
+            return null;
+        }
+
+        ArrayList<UserDTO.UserAttendanceForm> userAttendanceForms = new ArrayList<UserDTO.UserAttendanceForm>();
+        ArrayList<Attendance> attendanceArrayList = attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(week, time, idSubject);
+
+
+        for (Attendance attendance: attendanceArrayList)
+            if (userRepository.findById(attendance.getIdStudent()).orElse(null).getTypeUser() == Role.STUDENT) {
+                User user = userRepository.findById(attendance.getIdStudent()).orElse(null);
+                userAttendanceForms.add
+                        (
+                                UserDTO.UserAttendanceForm
+                                        .builder()
+                                        .id(attendance.getIdStudent())
+                                        .state(attendance.getStateAttendance())
+                                        .idUser(user.getIdUser())
+                                        .name(user.getNameUser())
+                                        .build()
+                        );
+            }
+
+        return userAttendanceForms;
     }
 }
