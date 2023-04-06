@@ -73,4 +73,32 @@ public class SubjectDTO {
         @Schema(description = "주차", example = "1")
         private String weekSubject;
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ToString
+    @Getter
+    @Builder
+    public static class ScheduleSubjectForm {
+        @Schema(description = "강의 기본키", example = "강의 기본키")
+        private Long id;
+
+        @Schema(description = "강의 시작 시간", example = "강의 시작 시간")
+        private String startTimeSubject;
+
+        @Schema(description = "강의 종료 시간", example = "강의 종료 시간")
+        private String endTimeSubject;
+
+        @Schema(description = "강의 요일", example = "강의 요일")
+        private String daySubject;
+
+        @Schema(description = "강좌명", example = "강좌명")
+        private String nameSubject;
+
+        @Schema(description = "강의실 위치", example = "101")
+        private String locationSubject;
+
+        @Schema(description = "교수명", example = "교수명")
+        private String profSubject;
+    }
 }

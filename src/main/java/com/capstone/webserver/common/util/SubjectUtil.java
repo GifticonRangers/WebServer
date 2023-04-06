@@ -13,6 +13,62 @@ import java.util.*;
 
 @Slf4j
 public class SubjectUtil {
+
+    public static Map<String, Map<String, ArrayList<String>>> splitLocationTime(String time) {
+        time = time.replace(" ", "");
+
+
+        boolean isOpen = false;
+        String temp = "";
+        ArrayList<String> timeList = new ArrayList<String>();
+        for (int i = 0; i < time.length(); i++) {
+            if (time.charAt(i) == ']') {
+                timeList.add(temp);
+                temp = "";
+            } else if (time.charAt(i) != '[')
+                temp += time.charAt(i);
+        }
+
+
+        Map<String, String> locationTime1 = new HashMap<String, String>();
+        for (String string: timeList) {
+            String[] strings = string.split(":");
+            locationTime1.put(strings[0], strings[1]);
+        }
+
+
+        Map<String, String[]> locationTimes = new HashMap<String, String[]>();
+        for (String loc:locationTime1.keySet())
+            locationTimes.put(loc, locationTime1.get(loc).split(","));
+
+
+        Map<String, Map<String, ArrayList<String>>> locationDayMap= new HashMap<String, Map<String, ArrayList<String>>>();
+        for (String loc: locationTimes.keySet()){
+            locationDayMap.put(loc, new HashMap<String, ArrayList<String>>());
+            for (String str: locationTimes.get(loc)){
+                String day = String.valueOf(str.charAt(0));
+                if (!locationDayMap.get(loc).containsKey(day))
+                    locationDayMap.get(loc).put(day, new ArrayList<String>());
+
+                time = str.substring(1);
+                time = time.replace("(", "");
+
+                temp = "";
+
+                for (int i = 0; i < time.length(); i++) {
+
+                    if (time.charAt(i) == ')') {
+                        locationDayMap.get(loc).get(day).add(temp);
+                        temp = "";
+                    } else
+                        temp += (time.charAt(i) == '-' ? "~" : time.charAt(i));
+                }
+            }
+        }
+
+        return locationDayMap;
+    }
+
     public static Map<String, ArrayList<String>> splitSubjectTime(String time) {
         /*
          * 시간표 자르는 로직
@@ -124,6 +180,7 @@ public class SubjectUtil {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         String date = now.format(formatter);
+        log.info(date);
 
         HashSet<Long> set = new HashSet<Long>();
 
@@ -136,7 +193,7 @@ public class SubjectUtil {
                                 .builder()
                                 .idSubject(attendance.getIdSubject())
                                 .nameSubject(subject.getNameSubject())
-                                .timeSubject(attendance.getDateAttendance().split("-")[4])
+                                .timeSubject(DateUtil.changeSubjectTime(attendance.getDateAttendance()))
                                 .weekSubject(attendance.getWeekAttendance())
                                 .profSubject(subject.getProfSubject())
                                 .locationSubject(splitLocation(subject.getTimeSubject(), attendance.getDateAttendance().split("-")[3]))
