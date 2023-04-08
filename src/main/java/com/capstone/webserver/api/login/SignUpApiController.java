@@ -52,7 +52,8 @@ public class SignUpApiController {
      * permission: ADMIN
      */
     @Operation(summary = "Confirm ID duplication",
-               description = "회원가입 시 바로 동작하므로 사용해보지 않아도 됨.")
+               description = "회원가입 시 학번/교번 중복체크 확인\n\n"
+                            + "idUser(학번/교번) 입력 필요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "successful operation"),
@@ -61,7 +62,7 @@ public class SignUpApiController {
     })
     @PostMapping("/api/login/checkId")
     public ResponseEntity<Boolean> checkDuplicateId(@RequestBody UserDTO.UserForm dto) {
-        Boolean check = signUpService.checkDuplicateId(dto.getIdUser());
+        Boolean check = signUpService.checkDuplicatedId(dto.getIdUser());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(check);

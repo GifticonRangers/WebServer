@@ -33,7 +33,7 @@ public class SignUpService {
     }
 
     /* id 중복 체크 */
-    public Boolean checkDuplicateId(String id) {
+    public Boolean checkDuplicatedId(String id) {
         return userRepository.findByIdUser(id).orElse(null) == null;
     }
 }
