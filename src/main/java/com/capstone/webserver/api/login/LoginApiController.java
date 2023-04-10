@@ -29,7 +29,7 @@ public class LoginApiController {
                description = "로그인 페이지\n\n"
                             + "idUser(학번/교번), pwUser 입력 필요")
     @PostMapping("/api/login/login")
-    public ResponseEntity<TokenInfoDTO> login(@RequestBody UserDTO.UserForm dto) {
+    public ResponseEntity<TokenInfoDTO> login(@RequestBody UserDTO.LoginForm dto) {
         TokenInfoDTO token = loginService.login(dto);
         return ResponseEntity
                 .status(token != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)

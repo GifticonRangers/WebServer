@@ -112,4 +112,24 @@ public class UserDTO {
                     .build();
         }
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @ToString
+    @Getter
+    public static class LoginForm {
+        @Schema(description = "학번/교번", example = "학번/교번")
+        private String idUser;
+
+        @Schema(description = "비밀번호", example = "비밀번호")
+        private String pwUser;
+
+        public User toEntity() {
+            return User.builder()
+                    .idUser(idUser)
+                    .pwUser(pwUser)
+                    .build();
+        }
+    }
 }

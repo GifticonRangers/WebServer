@@ -3,7 +3,6 @@ package com.capstone.webserver.service.login;
 import com.capstone.webserver.config.jwt.JwtTokenProvider;
 import com.capstone.webserver.dto.TokenInfoDTO;
 import com.capstone.webserver.dto.UserDTO;
-import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +27,7 @@ public class LoginService {
 
 
     /* Login Service */
-    public TokenInfoDTO login(UserDTO.UserForm dto) {
+    public TokenInfoDTO login(UserDTO.LoginForm dto) {
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(dto.getIdUser(), dto.getPwUser());
