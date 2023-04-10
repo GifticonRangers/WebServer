@@ -13,7 +13,7 @@ public class UserDTO {
     @NoArgsConstructor
     @ToString
     @Getter
-    public static class UserForm{
+    public static class UserForm {
         @Schema(description = "기본키")
         private Long id;
 
@@ -95,5 +95,21 @@ public class UserDTO {
 
         @Schema(description = "출결", example = "출결")
         private State state;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @ToString
+    @Getter
+    public static class UserIdForm {
+        @Schema(description = "학번/교번", example = "학번/교번")
+        private String idUser;
+
+        public User toEntity() {
+            return User.builder()
+                    .idUser(idUser)
+                    .build();
+        }
     }
 }
