@@ -69,7 +69,7 @@ public class UserDTO {
         public Auditor toEntity() {
             return Auditor
                     .builder()
-                    .id(null)
+//                    .id(null)
                     .idUser(idUser)
                     .idSubject(idSubject)
                     .build();
@@ -102,7 +102,7 @@ public class UserDTO {
     @Builder
     @ToString
     @Getter
-    public static class UserIdForm {
+    public static class idUserForm {
         @Schema(description = "학번/교번", example = "학번/교번")
         private String idUser;
 
@@ -129,6 +129,38 @@ public class UserDTO {
             return User.builder()
                     .idUser(idUser)
                     .pwUser(pwUser)
+                    .build();
+        }
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @ToString
+    @Getter
+    public static class userIdForm {
+        @Schema(description = "기본키값", example = "기본키값")
+        private Long id;
+
+        public User toEntity() {
+            return User.builder()
+                    .id(id)
+                    .build();
+        }
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @ToString
+    @Getter
+    public static class typeUserForm {
+        @Schema(description = "유저 종류")
+        private int type;
+
+        public User toEntity() {
+            return User.builder()
+                    .typeUser(Role.values()[type])
                     .build();
         }
     }

@@ -80,7 +80,7 @@ public class AttendanceService {
         }
     }
 
-    public Attendance updateAttendance(AttendanceDTO.AttendanceForm dto) {
+    public Attendance updateAttendance(AttendanceDTO.updateAttendanceForm dto) {
         Attendance attendance = dto.toEntity();
         Attendance target = attendanceRepository.findById(attendance.getId()).orElse(null);
 
@@ -94,7 +94,7 @@ public class AttendanceService {
         return attendanceRepository.save(target);
     }
 
-    public ArrayList<Attendance> showAttendanceByTime(AttendanceDTO.AttendanceForm dto) {
+    public ArrayList<Attendance> showAttendanceByTime(AttendanceDTO.showAttendanceForm dto) {
         String week = dto.getWeekAttendance();
         String time = dto.getTimeAttendance();
         Long idSubject = dto.getIdSubject();
@@ -116,7 +116,7 @@ public class AttendanceService {
         return attendances;
     }
 
-    public ArrayList<Attendance> showAttendanceByUser(AttendanceDTO.AttendanceForm dto) {
+    public ArrayList<Attendance> showAttendanceByUser(AttendanceDTO.checkAttendanceForm dto) {
         Long idStudent = dto.getIdStudent();
         Long idSubject = dto.getIdSubject();
 
@@ -128,7 +128,7 @@ public class AttendanceService {
         return attendanceRepository.findAllByIdStudentAndIdSubject(idStudent, idSubject);
     }
 
-    public AttendanceDTO.AttendanceInfoForm showAttendanceInfo(AttendanceDTO.AttendanceForm dto) {
+    public AttendanceDTO.AttendanceInfoForm showAttendanceInfo(AttendanceDTO.showAttendanceForm dto) {
         ArrayList<Attendance> attendances = attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(dto.getWeekAttendance(), dto.getTimeAttendance(), dto.getIdSubject());
         AttendanceDTO.AttendanceInfoForm attendanceInfoForm = AttendanceDTO.AttendanceInfoForm
                                                                                         .builder()

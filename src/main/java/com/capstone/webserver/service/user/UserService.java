@@ -89,7 +89,7 @@ public class UserService {
         return users;
     }
 
-    public ArrayList<UserDTO.UserAttendanceForm> showUserAttendanceBySubjectId(AttendanceDTO.AttendanceForm dto) {
+    public ArrayList<UserDTO.UserAttendanceForm> showUserAttendanceBySubjectId(AttendanceDTO.showAttendanceForm dto) {
         String week = dto.getWeekAttendance();
         String time = dto.getTimeAttendance();
         Long idSubject = dto.getIdSubject();

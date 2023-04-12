@@ -61,7 +61,7 @@ public class SignUpApiController {
                     description = "bad request operation")
     })
     @PostMapping("/api/login/checkId")
-    public ResponseEntity<Boolean> checkDuplicateId(@RequestBody UserDTO.UserIdForm dto) {
+    public ResponseEntity<Boolean> checkDuplicateId(@RequestBody UserDTO.idUserForm dto) {
         Boolean check = signUpService.checkDuplicatedId(dto.getIdUser());
         return ResponseEntity
                 .status(HttpStatus.OK)
