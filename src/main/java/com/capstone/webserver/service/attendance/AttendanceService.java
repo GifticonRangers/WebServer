@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 
 import static com.capstone.webserver.config.error.ErrorCode.*;
 
@@ -39,20 +39,26 @@ public class AttendanceService {
     @Autowired
     UserRepository userRepository;
 
-    public ArrayList<Attendance> createAttendanceList(Long subjectId, Long professorId) {
+    public ArrayList<Attendance> createAttendanceList(UserDTO.UserSubjectInfoForm dto) {
+        Long subjectId = dto.getIdSubject();
+        Long professorId = dto.getIdUser();
+
+        if (professorId == null || subjectId == null)
+            throw new CustomException(BadRequest);
+
         Subject target = subjectRepository.findById(subjectId).orElseThrow(() -> new CustomException(SUBJECT_NOT_FOUND));
         ArrayList<Attendance> attendanceArrayList = new ArrayList<Attendance>();
-
-        if (professorId == null)
-            throw new CustomException(USER_NOT_FOUND);
 
         Map<Integer, ArrayList<String>> schedules = DateUtil.computeDate(
                 Integer.parseInt(target.getYearSubject()),
                 target.getSemesterSubject(),
                 target.getTimeSubject()
         );
+        ArrayList<Auditor> auditors = auditorRepository.findAllByIdSubject(subjectId);
 
-        ArrayList<Auditor> auditors = auditorRepository.findAllByIdSubject(subjectId).orElseThrow(() -> new CustomException(AUDITOR_NOT_FOUND));
+        if(auditors == null || auditors.isEmpty()) {
+            throw new CustomException(AUDITOR_NOT_FOUND);
+        }
 
         for (Auditor auditor : auditors) {
             for (int i = 1; i <= 16; i++) {
@@ -86,7 +92,14 @@ public class AttendanceService {
     }
 
     public Attendance updateAttendance(AttendanceDTO.updateAttendanceForm dto) {
+        if (dto.getId() == null || (dto.getStateAttendance() < 0 || dto.getStateAttendance() > 3))
+            throw new CustomException(BadRequest);
+
         Attendance attendance = dto.toEntity();
+
+        if (attendance == null)
+            throw new CustomException(SERVER_ERROR);
+
         Attendance target = attendanceRepository.findById(attendance.getId()).orElseThrow(() -> new CustomException(ATTENDANCE_NOT_FOUND));
 
         target.patch(attendance);
@@ -101,15 +114,23 @@ public class AttendanceService {
 
         if (week == null || time == null || idSubject == null) {
             log.error("Error: Not found data");
-            
+            throw new CustomException(BadRequest);
         }
 
         ArrayList<Attendance> attendances = new ArrayList<Attendance>();
 
-        ArrayList<Attendance> target = attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(week, time, idSubject);
+        ArrayList<Attendance> target = attendanceRepository
+                                        .findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(week, time, idSubject);
+
+        if (target == null || target.isEmpty()){
+            throw new CustomException(ATTENDANCE_NOT_FOUND);
+        }
 
         for (Attendance attendance: target)
-            if (userRepository.findById(attendance.getIdStudent()).orElse(null).getTypeUser() == Role.STUDENT)
+            if (userRepository
+                    .findById(attendance.getIdStudent())
+                    .orElseThrow(() -> new CustomException(ATTENDANCE_NOT_FOUND))
+                    .getTypeUser() == Role.STUDENT)
                 attendances.add(attendance);
 
 
@@ -122,24 +143,46 @@ public class AttendanceService {
 
         if (idStudent == null || idSubject == null) {
             log.error("Error: Not found data");
-            return null;
+            throw new CustomException(BadRequest);
+        }
+        ArrayList<Attendance> attendances = attendanceRepository.findAllByIdStudentAndIdSubject(idStudent, idSubject);
+
+        if (attendances == null || attendances.isEmpty()){
+            throw new CustomException(ATTENDANCE_NOT_FOUND);
         }
 
-        return attendanceRepository.findAllByIdStudentAndIdSubject(idStudent, idSubject);
+        return attendances;
     }
 
     public AttendanceDTO.AttendanceInfoForm showAttendanceInfo(AttendanceDTO.showAttendanceForm dto) {
-        ArrayList<Attendance> attendances = attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(dto.getWeekAttendance(), dto.getTimeAttendance(), dto.getIdSubject());
-        AttendanceDTO.AttendanceInfoForm attendanceInfoForm = AttendanceDTO.AttendanceInfoForm
-                                                                                        .builder()
-                                                                                        .ATTENDANCE(0)
-                                                                                        .LATE(0)
-                                                                                        .ABSENCE(0)
-                                                                                        .PUBLIC_ABSENCE(0)
-                                                                                        .build();
+        String week = dto.getWeekAttendance();
+        String time = dto.getTimeAttendance();
+        Long idSubject = dto.getIdSubject();
+
+        if (week == null || time == null || idSubject == null) {
+            log.error("Error: Not found data");
+            throw new CustomException(BadRequest);
+        }
+
+        ArrayList<Attendance> attendances = attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(week, time, idSubject);
+
+        if (attendances == null || attendances.isEmpty()) {
+            throw new CustomException(ATTENDANCE_NOT_FOUND);
+        }
+
+        AttendanceDTO.AttendanceInfoForm attendanceInfoForm = AttendanceDTO
+                .AttendanceInfoForm
+                .builder()
+                .ATTENDANCE(0)
+                .LATE(0)
+                .ABSENCE(0)
+                .PUBLIC_ABSENCE(0)
+                .build();
 
         for (Attendance attendance: attendances) {
-            User user = userRepository.findById(attendance.getIdStudent()).orElse(null);
+            User user = userRepository
+                    .findById(attendance.getIdStudent())
+                    .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
             switch (attendance.getStateAttendance()) {
                 case ATTENDANCE:
@@ -164,7 +207,19 @@ public class AttendanceService {
     }
 
     public ArrayList<AttendanceDTO.DateForm> showAttendanceTimeList(UserDTO.UserSubjectInfoForm dto) {
-        ArrayList<Attendance> attendances = attendanceRepository.findAllByIdStudentAndIdSubject(dto.getIdUser(), dto.getIdSubject());
+        Long idUser = dto.getIdUser();
+        Long idSubject = dto.getIdSubject();
+
+        if (idUser == null || idSubject == null) {
+            log.error("Error: Not found data");
+            throw new CustomException(BadRequest);
+        }
+
+        ArrayList<Attendance> attendances = attendanceRepository.findAllByIdStudentAndIdSubject(idUser, idSubject);
+
+        if (attendances == null || attendances.isEmpty()) {
+            throw new CustomException(ATTENDANCE_NOT_FOUND);
+        }
 
         ArrayList<AttendanceDTO.DateForm> timeList = new ArrayList<AttendanceDTO.DateForm>();
 

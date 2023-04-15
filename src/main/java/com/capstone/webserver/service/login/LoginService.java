@@ -1,9 +1,9 @@
 package com.capstone.webserver.service.login;
 
+import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.config.jwt.JwtTokenProvider;
 import com.capstone.webserver.dto.TokenInfoDTO;
 import com.capstone.webserver.dto.UserDTO;
-import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.capstone.webserver.config.error.ErrorCode.*;
 
 @Service
 @Slf4j
@@ -29,10 +30,16 @@ public class LoginService {
 
 
     /* Login Service */
-    public TokenInfoDTO login(UserDTO.UserForm dto) {
+    public TokenInfoDTO login(UserDTO.LoginForm dto) {
+        String idUser = dto.getIdUser();
+        String pwUser = dto.getPwUser();
+
+        if (idUser == null || pwUser == null)
+            throw new CustomException(BadRequest);
+
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(dto.getIdUser(), dto.getPwUser());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(idUser, pwUser);
 
         // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
         // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행

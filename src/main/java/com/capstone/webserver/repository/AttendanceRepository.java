@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public interface AttendanceRepository extends CrudRepository<Attendance, Long> {
 
@@ -18,5 +19,5 @@ public interface AttendanceRepository extends CrudRepository<Attendance, Long> {
     ArrayList<Attendance> findAllByIdStudentAndIdSubject(Long idStudent, Long idSubject);
     
     /* 유저의 출석 정보 반환 */
-    ArrayList<Attendance> findAllByIdStudent(Long idStudent);
+    Optional<ArrayList<Attendance>> findAllByIdStudent(Long idStudent);
 }

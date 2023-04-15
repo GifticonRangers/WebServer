@@ -26,7 +26,7 @@ public class AttendanceApiController {
                     + "idUser(교수 기본키값), idSubject(강좌 기본키값) 입력 필요")
     @PostMapping("/api/attendance/createAttendanceList")
     public ResponseEntity<ArrayList<Attendance>> createAttendanceList(@RequestBody UserDTO.UserSubjectInfoForm dto) {
-        ArrayList<Attendance> attendanceArrayList = attendanceService.createAttendanceList(dto.getIdSubject(), dto.getIdUser());
+        ArrayList<Attendance> attendanceArrayList = attendanceService.createAttendanceList(dto);
 
         return ResponseEntity
                 .status(attendanceArrayList != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)

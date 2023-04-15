@@ -9,8 +9,6 @@ import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.entity.subject.Subject;
 import com.capstone.webserver.entity.subject.GetSubjectJSONModel;
 import com.capstone.webserver.entity.user.Auditor;
-import com.capstone.webserver.entity.user.Role;
-import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.repository.AttendanceRepository;
 import com.capstone.webserver.repository.AuditorRepository;
 import com.capstone.webserver.repository.SubjectRepository;
@@ -25,6 +23,8 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Map;
+
+import static com.capstone.webserver.config.error.ErrorCode.*;
 
 @Service
 @Slf4j
@@ -46,7 +46,6 @@ public class SubjectService {
         Reader reader = new FileReader("/home/ubuntu/WebServer/src/main/resources/json/subject.json");
         Gson gson = new Gson();
         GetSubjectJSONModel subjects = gson.fromJson(reader, GetSubjectJSONModel.class);
-
 
 
         for (Subject subject : subjects.getSubject()) {
@@ -87,7 +86,8 @@ public class SubjectService {
 
 
     public ArrayList<SubjectDTO.TodaySubjectForm> showTodaySubjectByUserId(UserDTO.userIdForm dto) {
-        ArrayList<Attendance> attendanceArrayList = attendanceRepository.findAllByIdStudent(dto.getId());
+        Long id = dto.getId();
+        ArrayList<Attendance> attendanceArrayList = attendanceRepository.findAllByIdStudent(id).orElse(null);
         ArrayList<Subject> subjectArrayList = showSubjectByUserId(dto);
 
         return SubjectUtil.createTodaySubjectList(attendanceArrayList, subjectArrayList);

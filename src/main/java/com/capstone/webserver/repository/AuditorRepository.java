@@ -13,7 +13,7 @@ public interface AuditorRepository extends CrudRepository<Auditor, Long> {
     ArrayList<Auditor> findAll();
 
     /* 해당 강좌를 듣는 유저 반환 */
-    Optional<ArrayList<Auditor>> findAllByIdSubject(Long idSubject);
+    ArrayList<Auditor> findAllByIdSubject(Long idSubject);
 
     /* 특정 유저가 듣는 강좌 반환 */
     ArrayList<Auditor> findAllByIdUser(Long idUser);
