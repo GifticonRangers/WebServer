@@ -1,5 +1,6 @@
 package com.capstone.webserver.service.attendance;
 
+import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.dto.AttendanceDTO;
 import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.attendance.Attendance;
@@ -19,6 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
+
+import static com.capstone.webserver.config.error.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -36,58 +40,54 @@ public class AttendanceService {
     UserRepository userRepository;
 
     public ArrayList<Attendance> createAttendanceList(Long subjectId, Long professorId) {
-        Subject target = subjectRepository.findById(subjectId).orElse(null);
+        Subject target = subjectRepository.findById(subjectId).orElseThrow(() -> new CustomException(SUBJECT_NOT_FOUND));
         ArrayList<Attendance> attendanceArrayList = new ArrayList<Attendance>();
 
-        if (target != null) {
-            Map<Integer, ArrayList<String>> schedules = DateUtil.computeDate(
-                    Integer.parseInt(target.getYearSubject()),
-                    target.getSemesterSubject(),
-                    target.getTimeSubject()
-            );
+        if (professorId == null)
+            throw new CustomException(USER_NOT_FOUND);
 
-            ArrayList<Auditor> auditors = auditorRepository.findAllByIdSubject(subjectId);
+        Map<Integer, ArrayList<String>> schedules = DateUtil.computeDate(
+                Integer.parseInt(target.getYearSubject()),
+                target.getSemesterSubject(),
+                target.getTimeSubject()
+        );
 
-            for (Auditor auditor : auditors) {
-                for (int i = 1; i <= 16; i++) {
-                    int j = 1;
-                    for (String schedule : schedules.get(i)) {
-                        Attendance entity = Attendance
-                                .builder()
-                                .id(null)
-                                .dateAttendance(schedule)
-                                .weekAttendance(String.format("%d", i))
-                                .timeAttendance(String.format("%d", j))
-                                .stateAttendance(State.ATTENDANCE)
-                                .idProfessor(professorId)
-                                .idStudent(auditor.getIdUser())
-                                .idSubject(subjectId)
-                                .build();
+        ArrayList<Auditor> auditors = auditorRepository.findAllByIdSubject(subjectId).orElseThrow(() -> new CustomException(AUDITOR_NOT_FOUND));
 
-                        log.info("Attendance: {}", entity.toString());
-                        Attendance save = attendanceRepository.save(entity);
-                        attendanceArrayList.add(save);
+        for (Auditor auditor : auditors) {
+            for (int i = 1; i <= 16; i++) {
+                int j = 1;
+                for (String schedule : schedules.get(i)) {
+                    Attendance entity = Attendance
+                            .builder()
+                            .id(null)
+                            .dateAttendance(schedule)
+                            .weekAttendance(String.format("%d", i))
+                            .timeAttendance(String.format("%d", j))
+                            .stateAttendance(State.ATTENDANCE)
+                            .idProfessor(professorId)
+                            .idStudent(auditor.getIdUser())
+                            .idSubject(subjectId)
+                            .build();
 
-                        j++;
-                    }
+                    if (entity == null)
+                        throw new CustomException(SERVER_ERROR);
+
+                    log.info("Attendance: {}", entity.toString());
+                    Attendance save = attendanceRepository.save(entity);
+                    attendanceArrayList.add(save);
+
+                    j++;
                 }
             }
-
-            return attendanceArrayList;
-        } else {
-            log.error("computeDate Failed: Not found Subject id");
-            return null;
         }
+
+        return attendanceArrayList;
     }
 
     public Attendance updateAttendance(AttendanceDTO.AttendanceForm dto) {
         Attendance attendance = dto.toEntity();
-        Attendance target = attendanceRepository.findById(attendance.getId()).orElse(null);
-
-        if (target == null) {
-            log.error("Error: Not found id");
-            return null;
-        }
+        Attendance target = attendanceRepository.findById(attendance.getId()).orElseThrow(() -> new CustomException(ATTENDANCE_NOT_FOUND));
 
         target.patch(attendance);
 
@@ -101,7 +101,7 @@ public class AttendanceService {
 
         if (week == null || time == null || idSubject == null) {
             log.error("Error: Not found data");
-            return null;
+            
         }
 
         ArrayList<Attendance> attendances = new ArrayList<Attendance>();

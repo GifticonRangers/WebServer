@@ -1,5 +1,6 @@
 package com.capstone.webserver.service.login;
 
+import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.config.jwt.JwtTokenProvider;
 import com.capstone.webserver.dto.TokenInfoDTO;
 import com.capstone.webserver.dto.UserDTO;
@@ -14,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.capstone.webserver.config.error.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @Slf4j
@@ -30,6 +33,8 @@ public class LoginService {
 
     /* Login Service */
     public TokenInfoDTO login(UserDTO.UserForm dto) {
+        userRepository.findByIdUser(dto.getIdUser())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(dto.getIdUser(), dto.getPwUser());

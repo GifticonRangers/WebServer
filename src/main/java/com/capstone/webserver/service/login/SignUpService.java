@@ -1,5 +1,6 @@
 package com.capstone.webserver.service.login;
 
+import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.repository.UserRepository;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import static com.capstone.webserver.config.error.ErrorCode.*;
 
 @Service
 @Slf4j
@@ -28,7 +30,7 @@ public class SignUpService {
         }
         else {
             log.error("Invalid request: type Error");
-            return null;
+            throw new CustomException(SERVER_ERROR);
         }
     }
 

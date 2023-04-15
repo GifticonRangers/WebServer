@@ -2,6 +2,7 @@ package com.capstone.webserver.service.subject;
 
 import com.capstone.webserver.common.util.DateUtil;
 import com.capstone.webserver.common.util.SubjectUtil;
+import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.dto.SubjectDTO;
 import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.attendance.Attendance;
@@ -45,6 +46,9 @@ public class SubjectService {
         Reader reader = new FileReader("/home/ubuntu/WebServer/src/main/resources/json/subject.json");
         Gson gson = new Gson();
         GetSubjectJSONModel subjects = gson.fromJson(reader, GetSubjectJSONModel.class);
+
+
+
         for (Subject subject : subjects.getSubject()) {
             subjectRepository.save(subject);
             log.info("Subject: {}", subject.toString());
