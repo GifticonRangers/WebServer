@@ -63,7 +63,7 @@ public class SubjectService {
     }
 
     /* 특정 유저가 듣는 과목 정보 반환 */
-    public ArrayList<Subject> showSubjectByUserId(UserDTO.UserForm dto) {
+    public ArrayList<Subject> showSubjectByUserId(UserDTO.userIdForm dto) {
         Long id = dto.getId();
 
         if (id == null) {
@@ -86,14 +86,14 @@ public class SubjectService {
     }
 
 
-    public ArrayList<SubjectDTO.TodaySubjectForm> showTodaySubjectByUserId(UserDTO.UserForm dto) {
+    public ArrayList<SubjectDTO.TodaySubjectForm> showTodaySubjectByUserId(UserDTO.userIdForm dto) {
         ArrayList<Attendance> attendanceArrayList = attendanceRepository.findAllByIdStudent(dto.getId());
         ArrayList<Subject> subjectArrayList = showSubjectByUserId(dto);
 
         return SubjectUtil.createTodaySubjectList(attendanceArrayList, subjectArrayList);
     }
 
-    public ArrayList<SubjectDTO.ScheduleSubjectForm> showScheduleSubjectByUserId(UserDTO.UserForm dto) {
+    public ArrayList<SubjectDTO.ScheduleSubjectForm> showScheduleSubjectByUserId(UserDTO.userIdForm dto) {
         Long id = dto.getId();
 
         if (id == null) {

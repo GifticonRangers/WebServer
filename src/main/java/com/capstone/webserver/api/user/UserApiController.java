@@ -63,7 +63,7 @@ public class UserApiController {
                          description = "bad request operation")
     })
     @PostMapping("/api/user/showAllUserByTypeUser")
-    public ResponseEntity<ArrayList<User>> showAllUserByTypeUser(@RequestBody UserDTO.UserForm dto) {
+    public ResponseEntity<ArrayList<User>> showAllUserByTypeUser(@RequestBody UserDTO.typeUserForm dto) {
         ArrayList<User> user = userService.showAllUserByTypeUser(Role.values()[dto.getType()].toString());
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
@@ -85,7 +85,7 @@ public class UserApiController {
                          description = "bad request operation")
     })
     @PostMapping("/api/user/showUserByIdUser")
-    public ResponseEntity<User> showUserById(@RequestBody UserDTO.UserForm dto) {
+    public ResponseEntity<User> showUserById(@RequestBody UserDTO.userIdForm dto) {
         User user = userService.showUserById(dto.getId());
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
@@ -119,7 +119,7 @@ public class UserApiController {
             description = "특정 주차의 차시에 따른 출석 리스트 반환\n\n"
                     + "weekAttendance, timeAttendance, idSubject(강좌 기본키값) 입력 필요")
     @PostMapping("/api/user/showUserAttendanceBySubjectId")
-    public ResponseEntity<ArrayList<UserDTO.UserAttendanceForm>> showUserAttendanceBySubjectId(@RequestBody AttendanceDTO.AttendanceForm dto) {
+    public ResponseEntity<ArrayList<UserDTO.UserAttendanceForm>> showUserAttendanceBySubjectId(@RequestBody AttendanceDTO.showAttendanceForm dto) {
         ArrayList<UserDTO.UserAttendanceForm> userAttendanceForms = userService.showUserAttendanceBySubjectId(dto);
         return ResponseEntity
                 .status(userAttendanceForms != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)

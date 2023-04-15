@@ -81,7 +81,7 @@ public class SubjectApiController {
                     description = "bad request operation")
     })
     @PostMapping("/api/subject/showSubjectByUserId")
-    public ResponseEntity<ArrayList<Subject>> showSubjectByUserId(@RequestBody UserDTO.UserForm dto) {
+    public ResponseEntity<ArrayList<Subject>> showSubjectByUserId(@RequestBody UserDTO.userIdForm dto) {
         ArrayList<Subject> subjects = subjectService.showSubjectByUserId(dto);
         return ResponseEntity
                 .status(subjects != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
@@ -102,7 +102,7 @@ public class SubjectApiController {
                     description = "bad request operation")
     })
     @PostMapping("/api/subject/showTodaySubjectByUserId")
-    public ResponseEntity<ArrayList<SubjectDTO.TodaySubjectForm>> showTodaySubjectByUserId(@RequestBody UserDTO.UserForm dto) {
+    public ResponseEntity<ArrayList<SubjectDTO.TodaySubjectForm>> showTodaySubjectByUserId(@RequestBody UserDTO.userIdForm dto) {
         ArrayList<SubjectDTO.TodaySubjectForm> subjects = subjectService.showTodaySubjectByUserId(dto);
         return ResponseEntity
                 .status(subjects != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
@@ -119,7 +119,7 @@ public class SubjectApiController {
                     description = "bad request operation")
     })
     @PostMapping("/api/subject/showScheduleSubjectByUserId")
-    public ResponseEntity<ArrayList<SubjectDTO.ScheduleSubjectForm>> showScheduleSubjectByUserId(@RequestBody UserDTO.UserForm dto) {
+    public ResponseEntity<ArrayList<SubjectDTO.ScheduleSubjectForm>> showScheduleSubjectByUserId(@RequestBody UserDTO.userIdForm dto) {
         ArrayList<SubjectDTO.ScheduleSubjectForm> scheduleSubjectForms = subjectService.showScheduleSubjectByUserId(dto);
         return ResponseEntity
                 .status(scheduleSubjectForms != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
