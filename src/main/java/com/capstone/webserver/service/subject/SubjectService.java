@@ -57,6 +57,9 @@ public class SubjectService {
 
     /* 모든 과목 반환 */
     public ArrayList<Subject> show() {
+        if (subjectRepository == null)
+            throw new CustomException(SUBJECT_NOT_FOUND);
+
         log.info("Request show: All");
         return subjectRepository.findAll();
     }
@@ -67,11 +70,14 @@ public class SubjectService {
 
         if (id == null) {
             log.error("Error: Not found id");
-            return null;
+            throw new CustomException(USER_NOT_FOUND);
         }
 
         ArrayList<Auditor> auditors = auditorRepository.findAllByIdUser(id);
         ArrayList<Subject> subjects = new ArrayList<Subject>();
+
+        if (auditors == null || auditors.isEmpty())
+            throw new CustomException(AUDITOR_NOT_FOUND);
 
         for (Auditor auditor : auditors)
             subjects.add(
@@ -87,7 +93,10 @@ public class SubjectService {
 
     public ArrayList<SubjectDTO.TodaySubjectForm> showTodaySubjectByUserId(UserDTO.userIdForm dto) {
         Long id = dto.getId();
-        ArrayList<Attendance> attendanceArrayList = attendanceRepository.findAllByIdStudent(id).orElse(null);
+        ArrayList<Attendance> attendanceArrayList = attendanceRepository
+                                                        .findAllByIdStudent(id)
+                                                        .orElseThrow(
+                                                                () -> new CustomException(ATTENDANCE_NOT_FOUND));
         ArrayList<Subject> subjectArrayList = showSubjectByUserId(dto);
 
         return SubjectUtil.createTodaySubjectList(attendanceArrayList, subjectArrayList);
@@ -98,11 +107,14 @@ public class SubjectService {
 
         if (id == null) {
             log.error("Error: Not found id");
-            return null;
+            throw new CustomException(USER_NOT_FOUND);
         }
 
         ArrayList<Auditor> auditors = auditorRepository.findAllByIdUser(id);
         ArrayList<SubjectDTO.ScheduleSubjectForm> scheduleSubjectForms = new ArrayList<SubjectDTO.ScheduleSubjectForm>();
+
+        if (auditors == null || auditors.isEmpty())
+            throw new CustomException(AUDITOR_NOT_FOUND);
 
         for (Auditor auditor : auditors) {
             Subject subject = subjectRepository.findById(auditor.getIdSubject()).orElse(null);

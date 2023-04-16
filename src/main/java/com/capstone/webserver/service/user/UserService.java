@@ -1,5 +1,6 @@
 package com.capstone.webserver.service.user;
 
+import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.dto.AttendanceDTO;
 import com.capstone.webserver.dto.SubjectDTO;
 import com.capstone.webserver.dto.UserDTO;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+import static com.capstone.webserver.config.error.ErrorCode.*;
+
 @Service
 @Slf4j
 public class UserService {
@@ -31,11 +34,18 @@ public class UserService {
     /* 모든 유저 반환 */
     public ArrayList<User> showAllUser() {
         log.info("Request show: All");
+
+        if (userRepository == null)
+            throw new CustomException(BadRequest);
+
         return userRepository.findAll();
     }
 
     /* 타입별 유저 반환 */
     public ArrayList<User> showAllUserByTypeUser(String type) {
+        if (type == null || userRepository == null)
+            throw new CustomException(BadRequest);
+
         log.info("Request show: {}", type);
         Role role;
 
@@ -59,7 +69,9 @@ public class UserService {
 
     /* id에 따른 유저 반환 */
     public User showUserById(Long id) {
-        User user = userRepository.findById(id).orElse(null);
+        User user = userRepository
+                        .findById(id)
+                        .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         if(user != null)
             log.info("Request show: {}", user.toString());
@@ -74,11 +86,14 @@ public class UserService {
 
         if (id == null) {
             log.error("Error: Not found id");
-            return null;
+            throw new CustomException(SUBJECT_NOT_FOUND);
         }
 
         ArrayList<Auditor> auditors = auditorRepository.findAllByIdSubject(id);
         ArrayList<User> users = new ArrayList<User>();
+
+        if (auditors == null || auditors.isEmpty())
+            throw new CustomException(AUDITOR_NOT_FOUND);
 
         for (Auditor auditor: auditors) {
             User user = userRepository.findByIdAndTypeUser(auditor.getIdUser(), Role.STUDENT);
@@ -96,12 +111,14 @@ public class UserService {
 
         if (week == null || time == null || idSubject == null) {
             log.error("Error: Not found data");
-            return null;
+            throw new CustomException(BadRequest);
         }
 
         ArrayList<UserDTO.UserAttendanceForm> userAttendanceForms = new ArrayList<UserDTO.UserAttendanceForm>();
         ArrayList<Attendance> attendanceArrayList = attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(week, time, idSubject);
 
+        if (attendanceArrayList == null || attendanceArrayList.isEmpty())
+            throw new CustomException(ATTENDANCE_NOT_FOUND);
 
         for (Attendance attendance: attendanceArrayList)
             if (userRepository.findById(attendance.getIdStudent()).orElse(null).getTypeUser() == Role.STUDENT) {
