@@ -42,14 +42,17 @@ public class UserService {
     }
 
     /* 타입별 유저 반환 */
-    public ArrayList<User> showAllUserByTypeUser(String type) {
-        if (type == null || userRepository == null)
+    public ArrayList<User> showAllUserByTypeUser(UserDTO.typeUserForm dto) {
+        if (dto.getType() < 0 || dto.getType() > 2)
             throw new CustomException(BadRequest);
 
-        log.info("Request show: {}", type);
-        Role role;
+        String type = Role.values()[dto.getType()].toString();
 
-        switch (type){
+
+        log.info("Request show: {}", type);
+        Role role = null;
+
+        switch (type) {
             case "ADMIN":
                 role = Role.ADMIN;
                 break;
@@ -61,44 +64,58 @@ public class UserService {
                 break;
             default:
                 log.error("Invalid request: Not found type");
-                return null;
+                throw new CustomException(SERVER_ERROR);
         }
 
-        return userRepository.findAllByTypeUser(role);
+        ArrayList<User> users = userRepository.findAllByTypeUser(role);
+
+        if (users == null || users.isEmpty())
+            throw new CustomException(USER_NOT_FOUND);
+
+        return users;
     }
 
     /* id에 따른 유저 반환 */
-    public User showUserById(Long id) {
+    public User showUserById(UserDTO.userIdForm dto) {
+        Long id = dto.getId();
+
+        if (id == null)
+            throw new CustomException(BadRequest);
+
         User user = userRepository
                         .findById(id)
                         .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        if(user != null)
-            log.info("Request show: {}", user.toString());
-        else
-            log.error("Invalid request: Not found id");
+        log.info("Request show: {}", user.toString());
 
         return user;
     }
 
-    public ArrayList<User> showUserBySubjectId(SubjectDTO.SubjectForm dto) {
+    public ArrayList<User> showUserBySubjectId(SubjectDTO.SubjectIdForm dto) {
         Long id = dto.getId();
 
         if (id == null) {
             log.error("Error: Not found id");
-            throw new CustomException(SUBJECT_NOT_FOUND);
+            throw new CustomException(BadRequest);
         }
 
         ArrayList<Auditor> auditors = auditorRepository.findAllByIdSubject(id);
-        ArrayList<User> users = new ArrayList<User>();
 
         if (auditors == null || auditors.isEmpty())
             throw new CustomException(AUDITOR_NOT_FOUND);
 
+        ArrayList<User> users = new ArrayList<User>();
+
         for (Auditor auditor: auditors) {
-            User user = userRepository.findByIdAndTypeUser(auditor.getIdUser(), Role.STUDENT);
-            if(user != null)
-                users.add(user);
+            Long idUser = auditor.getIdUser();
+            if (idUser == null)
+                throw new CustomException(AUDITOR_NOT_FOUND);
+
+            User user = userRepository
+                            .findByIdAndTypeUser(idUser, Role.STUDENT)
+                            .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+            users.add(user);
         }
 
         return users;
@@ -115,14 +132,22 @@ public class UserService {
         }
 
         ArrayList<UserDTO.UserAttendanceForm> userAttendanceForms = new ArrayList<UserDTO.UserAttendanceForm>();
-        ArrayList<Attendance> attendanceArrayList = attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(week, time, idSubject);
+        ArrayList<Attendance> attendanceArrayList = attendanceRepository
+                .findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(week, time, idSubject);
 
         if (attendanceArrayList == null || attendanceArrayList.isEmpty())
             throw new CustomException(ATTENDANCE_NOT_FOUND);
 
-        for (Attendance attendance: attendanceArrayList)
-            if (userRepository.findById(attendance.getIdStudent()).orElse(null).getTypeUser() == Role.STUDENT) {
-                User user = userRepository.findById(attendance.getIdStudent()).orElse(null);
+        for (Attendance attendance: attendanceArrayList) {
+            Long idStudent = attendance.getIdStudent();
+            if (idStudent == null)
+                throw new CustomException(SERVER_ERROR);
+            
+            User user = userRepository
+                            .findById(idStudent)
+                            .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+            
+            if (user.getTypeUser() == Role.STUDENT) {
                 userAttendanceForms.add
                         (
                                 UserDTO.UserAttendanceForm
@@ -134,6 +159,10 @@ public class UserService {
                                         .build()
                         );
             }
+        }
+
+        if (userAttendanceForms.isEmpty())
+            throw new CustomException(SERVER_ERROR);
 
         return userAttendanceForms;
     }

@@ -19,5 +19,5 @@ public interface AttendanceRepository extends CrudRepository<Attendance, Long> {
     ArrayList<Attendance> findAllByIdStudentAndIdSubject(Long idStudent, Long idSubject);
     
     /* 유저의 출석 정보 반환 */
-    Optional<ArrayList<Attendance>> findAllByIdStudent(Long idStudent);
+    ArrayList<Attendance> findAllByIdStudent(Long idStudent);
 }

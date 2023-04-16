@@ -1,5 +1,6 @@
 package com.capstone.webserver.config.jwt;
 
+import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.dto.TokenInfoDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.capstone.webserver.config.error.ErrorCode.*;
 
 @Slf4j
 @Component

@@ -64,7 +64,7 @@ public class UserApiController {
     })
     @PostMapping("/api/user/showAllUserByTypeUser")
     public ResponseEntity<ArrayList<User>> showAllUserByTypeUser(@RequestBody UserDTO.typeUserForm dto) {
-        ArrayList<User> user = userService.showAllUserByTypeUser(Role.values()[dto.getType()].toString());
+        ArrayList<User> user = userService.showAllUserByTypeUser(dto);
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(user);
@@ -86,7 +86,7 @@ public class UserApiController {
     })
     @PostMapping("/api/user/showUserByIdUser")
     public ResponseEntity<User> showUserById(@RequestBody UserDTO.userIdForm dto) {
-        User user = userService.showUserById(dto.getId());
+        User user = userService.showUserById(dto);
         return ResponseEntity
                 .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(user);
@@ -107,7 +107,7 @@ public class UserApiController {
                     description = "bad request operation")
     })
     @PostMapping("/api/user/showUserBySubjectId")
-    public ResponseEntity<ArrayList<User>> showUserBySubjectId(@RequestBody SubjectDTO.SubjectForm dto) {
+    public ResponseEntity<ArrayList<User>> showUserBySubjectId(@RequestBody SubjectDTO.SubjectIdForm dto) {
         ArrayList<User> users = userService.showUserBySubjectId(dto);
         return ResponseEntity
                 .status(users != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)

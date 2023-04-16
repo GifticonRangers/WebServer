@@ -1,5 +1,7 @@
 package com.capstone.webserver.dto;
 
+import com.capstone.webserver.entity.attendance.Attendance;
+import com.capstone.webserver.entity.subject.Subject;
 import com.capstone.webserver.entity.user.Gender;
 import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;
@@ -100,5 +102,21 @@ public class SubjectDTO {
 
         @Schema(description = "교수명", example = "교수명")
         private String profSubject;
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ToString
+    @Getter
+    @Builder
+    public static class SubjectIdForm {
+        @Schema(description = "강의 기본키", example = "강의 기본키")
+        private Long id;
+
+        public Subject toEntity() {
+            return Subject.builder()
+                    .id(id)
+                    .build();
+        }
     }
 }

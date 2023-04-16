@@ -47,8 +47,14 @@ public class SubjectService {
         Gson gson = new Gson();
         GetSubjectJSONModel subjects = gson.fromJson(reader, GetSubjectJSONModel.class);
 
+        if(subjects == null)
+            throw new CustomException(SERVER_ERROR);
+
 
         for (Subject subject : subjects.getSubject()) {
+            if (subject == null)
+                throw new CustomException(SERVER_ERROR);
+
             subjectRepository.save(subject);
             log.info("Subject: {}", subject.toString());
         }
@@ -70,7 +76,7 @@ public class SubjectService {
 
         if (id == null) {
             log.error("Error: Not found id");
-            throw new CustomException(USER_NOT_FOUND);
+            throw new CustomException(BadRequest);
         }
 
         ArrayList<Auditor> auditors = auditorRepository.findAllByIdUser(id);
@@ -93,10 +99,18 @@ public class SubjectService {
 
     public ArrayList<SubjectDTO.TodaySubjectForm> showTodaySubjectByUserId(UserDTO.userIdForm dto) {
         Long id = dto.getId();
+        if (id == null) {
+            log.error("Error: Not found id");
+            throw new CustomException(BadRequest);
+        }
+
+
         ArrayList<Attendance> attendanceArrayList = attendanceRepository
-                                                        .findAllByIdStudent(id)
-                                                        .orElseThrow(
-                                                                () -> new CustomException(ATTENDANCE_NOT_FOUND));
+                           .findAllByIdStudent(id);
+
+        if(attendanceArrayList == null || attendanceArrayList.isEmpty())
+            throw new CustomException(ATTENDANCE_NOT_FOUND);
+
         ArrayList<Subject> subjectArrayList = showSubjectByUserId(dto);
 
         return SubjectUtil.createTodaySubjectList(attendanceArrayList, subjectArrayList);
@@ -117,7 +131,10 @@ public class SubjectService {
             throw new CustomException(AUDITOR_NOT_FOUND);
 
         for (Auditor auditor : auditors) {
-            Subject subject = subjectRepository.findById(auditor.getIdSubject()).orElse(null);
+            Subject subject = subjectRepository
+                                .findById(auditor.getIdSubject())
+                                .orElseThrow(() -> new CustomException(SUBJECT_NOT_FOUND));
+
             Map<String, Map<String, ArrayList<String>>> locationDayTime = SubjectUtil.splitLocationTime(subject.getTimeSubject());
             for (String loc : locationDayTime.keySet())
                 for (String day : locationDayTime.get(loc).keySet()) {
