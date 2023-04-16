@@ -1,10 +1,12 @@
 package com.capstone.webserver.config;
 
+import antlr.Token;
+//import com.capstone.webserver.config.error.TokenAuthenticationFilter;
+//import com.capstone.webserver.config.jwt.JWTExceptionFilter;
+import com.capstone.webserver.config.error.CustomAuthenticationEntryPoint;
 import com.capstone.webserver.config.jwt.JwtAuthenticationFilter;
 import com.capstone.webserver.config.jwt.JwtTokenProvider;
-import com.capstone.webserver.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,9 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -38,7 +37,11 @@ public class SecurityConfig  {
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/api/login/**").permitAll()
                 .anyRequest().authenticated();
         http
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                ;
+//                .addFilterBefore(new JWTExceptionFilter(), TokenAuthenticationFilter.class);
 
         /*
         http

@@ -73,13 +73,13 @@ public enum ErrorCode {
     BadRequest(BAD_REQUEST, "잘못된 요청"),
 
     /* 401 UNAUTHORIZED */
+    INVALID_JWT_TOKEN(UNAUTHORIZED, "손상된 토큰"),
+    EXPIRED_JWT_TOKEN(UNAUTHORIZED,"만료된 토큰"),
+    UNSUPPORTED_JWT_TOKEN(UNAUTHORIZED, "지원하지 않는 토큰"),
+    NON_LOGIN(UNAUTHORIZED, "JWT claims가 비어있음"),
 
     /* 403 FORBIDDEN */
     Forbidden(FORBIDDEN, "권한 없음"),
-    INVALID_JWT_TOKEN(FORBIDDEN, "손상된 토큰"),
-    EXPIRED_JWT_TOKEN(FORBIDDEN,"만료된 토큰"),
-    UNSUPPORTED_JWT_TOKEN(FORBIDDEN, "지원하지 않는 토큰"),
-    NON_LOGIN(FORBIDDEN, "JWT claims가 비어있음"),
 
     /* 404 NOT_FOUND */
     USER_NOT_FOUND(NOT_FOUND, "일치하는 유저 정보 없음"),
