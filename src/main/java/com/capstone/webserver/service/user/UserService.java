@@ -15,7 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static com.capstone.webserver.config.error.ErrorCode.*;
 
@@ -112,7 +114,7 @@ public class UserService {
                 throw new CustomException(AUDITOR_NOT_FOUND);
 
             User user = userRepository
-                            .findByIdAndTypeUser(idUser, Role.STUDENT)
+                            .findById(idUser)
                             .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
             users.add(user);
@@ -165,5 +167,13 @@ public class UserService {
             throw new CustomException(SERVER_ERROR);
 
         return userAttendanceForms;
+    }
+
+    public User hasUser(Principal principal) {
+        User user = userRepository
+                .findByIdUser(principal.getName())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        return user;
     }
 }

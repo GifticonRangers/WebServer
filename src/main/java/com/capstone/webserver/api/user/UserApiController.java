@@ -5,6 +5,7 @@ import com.capstone.webserver.dto.SubjectDTO;
 import com.capstone.webserver.dto.UserDTO;
 import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;
+import com.capstone.webserver.repository.UserRepository;
 import com.capstone.webserver.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,12 +13,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 
 @RestController
@@ -124,5 +128,24 @@ public class UserApiController {
         return ResponseEntity
                 .status(userAttendanceForms != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(userAttendanceForms);
+    }
+
+    @Operation(summary = "Show Personal User Info",
+            description = "로그인한 유저 정보")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "successful operation",
+                    content = @Content(schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "bad request operation")
+    })
+    @GetMapping("/api/user/showPersonalUser")
+    public ResponseEntity<User> showPersonalUser(Principal principal) {
+
+        User user = userService.hasUser(principal);
+
+        return ResponseEntity
+                .status(user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(user);
     }
 }
