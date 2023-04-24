@@ -170,10 +170,9 @@ public class UserService {
     }
 
     public User hasUser(Principal principal) {
-        User user = userRepository
+
+        return userRepository
                 .findByIdUser(principal.getName())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-
-        return user;
     }
 }
