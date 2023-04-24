@@ -114,11 +114,17 @@ public class UserService {
                 throw new CustomException(AUDITOR_NOT_FOUND);
 
             User user = userRepository
-                            .findById(idUser)
-                            .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+                            .findByIdAndTypeUser(idUser, Role.STUDENT);
 
-            users.add(user);
+            if (user != null)
+                users.add(user);
+            else
+                continue;
+//                            .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         }
+
+        if (users == null)
+            throw new CustomException(USER_NOT_FOUND);
 
         return users;
     }
