@@ -8,6 +8,8 @@ import com.capstone.webserver.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.util.ArrayList;
+
 public class UserDTO {
     @AllArgsConstructor
     @NoArgsConstructor
@@ -76,7 +78,24 @@ public class UserDTO {
         }
     }
 
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @ToString
+    @Getter
+    public static class AddSubjectForm {
+        @Schema(description="유저 기본키값")
+        private Long idUser;
+        @Schema(description="강좌 기본키값")
+        private ArrayList<Long> subjects;
 
+//        public Auditor toEntity() {
+//            return Auditor
+//                    .builder()
+//                    .idUser(idUser)
+//                    .idSubject(idSubject)
+//                    .build();
+//        }
+    }
 
     @AllArgsConstructor
     @NoArgsConstructor

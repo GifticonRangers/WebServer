@@ -9,6 +9,8 @@ import org.apache.commons.lang3.concurrent.CircuitBreakingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 import static com.capstone.webserver.config.error.ErrorCode.*;
 
 @Slf4j
@@ -17,17 +19,33 @@ public class AuditorService {
     @Autowired
     AuditorRepository auditorRepository;
 
-    public Auditor create(UserDTO.UserSubjectInfoForm dto) {
-        if (dto.getIdUser() == null || dto.getIdSubject() == null)
+    public ArrayList<Auditor> addSubject(UserDTO.AddSubjectForm dto) {
+        Long idUser = dto.getIdUser();
+        ArrayList<Long> addSubjectList = dto.getSubjects();
+
+        if (idUser == null || addSubjectList == null)
             throw new CustomException(BadRequest);
 
-        Auditor auditor = dto.toEntity();
-        if(auditor == null)
+        ArrayList<Auditor> auditors = new ArrayList<>();
+
+        for (int i = 0; i < addSubjectList.size(); i++) {
+
+            Long idSubject = dto.getSubjects().get(i);
+            log.info(String.valueOf(idSubject));
+
+            Auditor auditor = Auditor.builder()
+                    .idUser(idUser)
+                    .idSubject(idSubject)
+                    .build();
+
+            auditorRepository.save(auditor);
+            log.info("Auditor: {}", auditor);
+            auditors.add(auditor);
+        }
+
+        if (auditors == null)
             throw new CustomException(SERVER_ERROR);
 
-        auditorRepository.save(auditor);
-        log.info("Auditor: {}", auditor.toString());
-        return auditor;
+        return auditors;
     }
-
 }
