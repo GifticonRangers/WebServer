@@ -20,7 +20,7 @@ public class SignUpService {
     PasswordEncoder passwordEncoder;
 
     /* SignUp Service */
-    public User signup(UserDTO.UserForm dto) {
+    public User signup(UserDTO.SignUpForm dto) {
         User user = dto.toEntity();
         if(user != null) {
             user.setPwUser(passwordEncoder.encode(user.getPwUser()));

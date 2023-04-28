@@ -38,7 +38,7 @@ public class SignUpApiController {
                     description = "bad request operation")
     })
     @PostMapping("/api/login/signup")
-    public ResponseEntity<User> signup(@RequestBody UserDTO.UserForm dto) {
+    public ResponseEntity<User> signup(@RequestBody UserDTO.SignUpForm dto) {
         User user = signUpService.signup(dto);
 
         return ResponseEntity
