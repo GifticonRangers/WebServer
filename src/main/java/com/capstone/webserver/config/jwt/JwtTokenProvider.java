@@ -73,12 +73,7 @@ public class JwtTokenProvider {
                     .compact();
 
             user.setRefreshToken(refreshToken);
-
-            return TokenInfoDTO.builder()
-                    .grantType("Bearer")
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
+            log.info(String.valueOf(user));
         } else {
             // 최초 로그인 시 Refresh Token 발급
             String refreshToken = Jwts.builder()
@@ -87,9 +82,11 @@ public class JwtTokenProvider {
                     .compact();
 
             user.setRefreshToken(refreshToken);
+            log.info(String.valueOf(user));
         }
 
         userRepository.save(user);
+        log.info(String.valueOf(userRepository.save(user)));
         log.info(String.valueOf(user));
 
         return TokenInfoDTO.builder()
