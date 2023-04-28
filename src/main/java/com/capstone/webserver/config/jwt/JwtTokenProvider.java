@@ -2,14 +2,14 @@ package com.capstone.webserver.config.jwt;
 
 import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.dto.TokenInfoDTO;
+import com.capstone.webserver.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,11 +28,19 @@ import static com.capstone.webserver.config.error.ErrorCode.*;
 @Component
 public class JwtTokenProvider {
 
+    @Autowired
+    UserRepository userRepository;
     private final Key key;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    // Refresh Token이 발급되었는지 확인하는 메서드
+    private boolean isRefreshToken(String idUser) {
+        String refreshToken = userRepository.findByrefreshToken(idUser);
+        return refreshToken != null;
     }
 
     // 유저 정보를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
@@ -44,7 +52,7 @@ public class JwtTokenProvider {
 
         long now = (new Date()).getTime();
         // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + 86400000);
+        Date accessTokenExpiresIn = new Date(now + 10800000);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
@@ -52,17 +60,70 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        // Refresh Token 생성
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 86400000))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+        String idUser = authentication.getName();
+        boolean isRefreshToken = isRefreshToken(idUser);
+
+        com.capstone.webserver.entity.user.User user = userRepository.findByIdUser(idUser).orElseThrow(() -> new CustomException(BadRequest));
+        log.info(String.valueOf(user));
+        if (isRefreshToken) {
+            // Refresh Token 생성
+            String refreshToken = Jwts.builder()
+                    .setExpiration(new Date(now + 86400000 * 30))
+                    .signWith(key, SignatureAlgorithm.HS256)
+                    .compact();
+
+            user.setRefreshToken(refreshToken);
+
+            return TokenInfoDTO.builder()
+                    .grantType("Bearer")
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        } else {
+            // 최초 로그인 시 Refresh Token 발급
+            String refreshToken = Jwts.builder()
+                    .setExpiration(new Date(now + 86400000 * 30))
+                    .signWith(key, SignatureAlgorithm.HS256)
+                    .compact();
+
+            user.setRefreshToken(refreshToken);
+        }
+
+        userRepository.save(user);
+        log.info(String.valueOf(user));
 
         return TokenInfoDTO.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .refreshToken(user.getRefreshToken())
                 .build();
+    }
+
+    public TokenInfoDTO refreshToken(String refreshToken) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken);
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken).getBody();
+            String idUser = claims.getSubject();
+            String dbRefreshToken = userRepository.findByrefreshToken(idUser);
+            if (dbRefreshToken.equals(refreshToken)) {
+                Authentication authentication = getAuthentication(refreshToken);
+                return generateToken(authentication);
+            } else {
+                throw new CustomException(INVALID_JWT_TOKEN);
+            }
+        } catch (SecurityException | MalformedJwtException e){
+            log.info("Invalid JWT Token", e);
+            throw new CustomException(INVALID_JWT_TOKEN);
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT Token", e);
+            throw new CustomException(EXPIRED_JWT_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT Token", e);
+            throw new CustomException(UNSUPPORTED_JWT_TOKEN);
+        } catch (IllegalArgumentException e) {
+            log.info("JWT claims string is empty.", e);
+            throw new CustomException(NON_LOGIN);
+        }
     }
 
     // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드

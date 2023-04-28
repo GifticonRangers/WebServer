@@ -20,4 +20,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     /* 해당 아이디와 역할 찾는 것 */
     User findByIdAndTypeUser(Long id, Role typeUser);
+
+    String findByrefreshToken(String idUser);
 }
