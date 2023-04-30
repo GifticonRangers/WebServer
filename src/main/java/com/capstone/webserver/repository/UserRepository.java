@@ -2,7 +2,9 @@ package com.capstone.webserver.repository;
 
 import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.entity.user.User;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -21,5 +23,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     /* 해당 아이디와 역할 찾는 것 */
     User findByIdAndTypeUser(Long id, Role typeUser);
 
-    String findByrefreshToken(String idUser);
+    @Query("SELECT u.refreshToken FROM User u WHERE u.idUser = :idUser")
+    String findRefreshTokenByIdUser(@Param("idUser") String idUser);
 }

@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 // refreshToken 갱신
-                TokenInfoDTO tokenInfoDTO = jwtTokenProvider.refreshToken(token);
+                TokenInfoDTO tokenInfoDTO = jwtTokenProvider.generateToken(authentication);
                 HttpServletResponse httpServletResponse = (HttpServletResponse) response;
                 httpServletResponse.setHeader("Authorization", "Bearer " + tokenInfoDTO.getAccessToken());
                 if (tokenInfoDTO.getRefreshToken() != null) {

@@ -43,6 +43,13 @@ public class SwaggerConfig {
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi tokenApi() {
+        return GroupedOpenApi.builder()
+                .group("token-api")
+                .pathsToMatch("/api/token/**")
+                .build();
+    }
 
     @Bean
     public OpenAPI openAPI() {
