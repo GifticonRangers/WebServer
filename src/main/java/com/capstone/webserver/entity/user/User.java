@@ -54,7 +54,7 @@ public class User implements UserDetails {
     private Gender genderUser;
 
     @Schema(description = "refresh token")
-    @Column private String refreshToken;
+    @Column(name = "refresh_token") private String refreshToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

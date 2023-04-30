@@ -2,6 +2,7 @@ package com.capstone.webserver.config.jwt;
 
 import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.dto.TokenInfoDTO;
+import com.capstone.webserver.entity.user.Role;
 import com.capstone.webserver.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -79,18 +80,38 @@ public class JwtTokenProvider {
         com.capstone.webserver.entity.user.User user = userRepository.findByIdUser(idUser).orElseThrow(() -> new CustomException(BadRequest));
         log.info(String.valueOf(user));
 
+        Date refreshTokenExpiresIn = new Date(now + 24 * 30 * 60 * 60);
+
         if (refreshTokenExists) {
-            // 기존 Refresh Token 사용
-            String refreshToken = user.getRefreshToken();
+            // 이미 Refresh Token이 DB 상에 저장되어 있는 경우
+            String existingRefreshToken = userRepository.findRefreshTokenByIdUser(idUser);
 
-            log.info("refresh token: " + refreshToken);
-
-            setRefreshToken(idUser, refreshToken);
+            try {
+                Date existingRefreshTokenExpirationDate = Jwts.parserBuilder()
+                        .setSigningKey(refreshTokenKey)
+                        .build()
+                        .parseClaimsJws(existingRefreshToken)
+                        .getBody()
+                        .getExpiration();
+            } catch (ExpiredJwtException e) {
+                Date nowDate = new Date();
+                log.info("1234");
+                // Refresh Token이 만료된 경우
+                String newRefreshToken = Jwts.builder()
+                        .setSubject(idUser)
+                        .claim("auth", authorities)
+                        .setExpiration(refreshTokenExpiresIn)
+                        .signWith(refreshTokenKey, SignatureAlgorithm.HS256)
+                        .compact();
+                setRefreshToken(idUser, newRefreshToken);
+                log.info("Refresh Token이 만료되어 새로운 토큰 발급: " + newRefreshToken);
+            }
         } else {
             // 최초 로그인 시 Refresh Token 발급
             String refreshToken = Jwts.builder()
                     .setSubject(idUser)
-                    .setExpiration(new Date(now + 86400000L * 30))
+                    .claim("auth", authorities)
+                    .setExpiration(refreshTokenExpiresIn)
                     .signWith(refreshTokenKey, SignatureAlgorithm.HS256)
                     .compact();
 
@@ -105,15 +126,19 @@ public class JwtTokenProvider {
             throw new CustomException(BadRequest);
         }
 
-        log.info("Before save: " + user.getRefreshToken());
+        log.info("Before save: " + user.toString());
         userRepository.save(user);
-        log.info("After save: " + userRepository.findById(user.getId()).get().getRefreshToken());
+        log.info("After save: " + userRepository.findById(user.getId()).orElseThrow(() -> new CustomException(BadRequest)).toString());
 
-        return TokenInfoDTO.builder()
+        TokenInfoDTO tokenInfoDTO = TokenInfoDTO.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(user.getRefreshToken())
                 .build();
+
+        log.info(tokenInfoDTO.toString());
+
+        return tokenInfoDTO;
     }
 
     public TokenInfoDTO refreshToken(String refreshToken) {
@@ -126,7 +151,7 @@ public class JwtTokenProvider {
             }
 
             // 1. 전달된 refreshToken이 유효한 token인지 확인
-            Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(refreshToken);
+            Jwts.parserBuilder().setSigningKey(refreshTokenKey).build().parseClaimsJws(refreshToken);
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(refreshTokenKey)
                     .build()
@@ -156,7 +181,7 @@ public class JwtTokenProvider {
             Authentication authentication = getAuthentication(refreshToken);
             return generateToken(authentication);
 
-        } catch (SecurityException | MalformedJwtException e){
+        } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
             throw new CustomException(INVALID_JWT_TOKEN);
         } catch (ExpiredJwtException e) {
@@ -172,12 +197,12 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
-    public Authentication getAuthentication(String accessToken) {
+    public Authentication getAuthentication(String token) {
         // 토큰 복호화
-        Claims claims = parseClaims(accessToken);
+        Claims claims = parseClaims(token);
 
         if (claims.get("auth") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new CustomException(Forbidden);
         }
 
         // 클레임에서 권한 정보 가져오기
@@ -196,7 +221,7 @@ public class JwtTokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(token);
             return true;
-        } catch (SecurityException | MalformedJwtException e){
+        } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
             throw new CustomException(INVALID_JWT_TOKEN);
         } catch (ExpiredJwtException e) {
