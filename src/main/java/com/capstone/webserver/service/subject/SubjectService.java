@@ -43,8 +43,8 @@ public class SubjectService {
 
     /* DB에 과목 등록 */
     public void update() throws FileNotFoundException {
-//        Reader reader = new FileReader("/home/ubuntu/WebServer/src/main/resources/json/subject.json");
-        Reader reader = new FileReader("D:\\INU-LECTURE\\WebServer\\src\\main\\resources\\json\\subject.json");
+        Reader reader = new FileReader("/home/ubuntu/WebServer/src/main/resources/json/subject.json");
+//        Reader reader = new FileReader("D:\\INU-LECTURE\\WebServer\\src\\main\\resources\\json\\subject.json");
         Gson gson = new Gson();
         GetSubjectJSONModel subjects = gson.fromJson(reader, GetSubjectJSONModel.class);
 

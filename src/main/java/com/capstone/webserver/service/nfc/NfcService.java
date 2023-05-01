@@ -3,6 +3,7 @@ package com.capstone.webserver.service.nfc;
 import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.dto.AttendanceDTO;
 import com.capstone.webserver.entity.attendance.Attendance;
+import com.capstone.webserver.entity.attendance.State;
 import com.capstone.webserver.repository.AttendanceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,7 @@ public class NfcService {
         for (Attendance attendance: target) {
             attendance.setStartAttendance(startTime);
             attendance.setNfcCount(0);
+            attendance.setStateAttendance(State.ABSENCE);
             attendanceRepository.save(attendance);
         }
 
@@ -109,6 +111,7 @@ public class NfcService {
         if(attendance.getEndAttendance() == null){
             int count = attendance.getNfcCount();
             attendance.setNfcCount(count+1);
+            attendance.setStateAttendance(State.ATTENDANCE);
             attendanceRepository.save(attendance);
             return true;
         }
