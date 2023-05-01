@@ -52,6 +52,14 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi nfcApi() {
+        return GroupedOpenApi.builder()
+                .group("nfc-api")
+                .pathsToMatch("/api/nfc/**")
+                .build();
+    }
+
+    @Bean
     public OpenAPI openAPI() {
 
         Info info = new Info()

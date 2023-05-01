@@ -73,6 +73,9 @@ public class AttendanceService {
                             .idProfessor(professorId)
                             .idStudent(auditor.getIdUser())
                             .idSubject(subjectId)
+                            .startAttendance(null)
+                            .endAttendance(null)
+                            .nfcCount(0)
                             .build();
 
                     if (entity == null)
