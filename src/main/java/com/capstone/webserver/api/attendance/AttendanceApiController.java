@@ -99,11 +99,11 @@ public class AttendanceApiController {
             description = "출결 상태가 보류인 학생 반환\n\n"
                     + "weekAttendance, timeAttendance, idSubject(강좌 기본키값) 입력 필요")
     @PostMapping("/api/attendance/showHoldAttendance")
-    public ResponseEntity<List<Attendance>> showHoldAttendance(@RequestBody AttendanceDTO.showAttendanceForm dto) {
-        List<Attendance> holdAttendance = attendanceService.showHoldAttendance(dto);
+    public ResponseEntity<List<UserDTO.userInfoForm>> showHoldAttendance(@RequestBody AttendanceDTO.showAttendanceForm dto) {
+        List<UserDTO.userInfoForm> holdUsers = attendanceService.showHoldAttendance(dto);
 
         return ResponseEntity
-                .status(holdAttendance != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
-                .body(holdAttendance);
+                .status(holdUsers != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(holdUsers);
     }
 }

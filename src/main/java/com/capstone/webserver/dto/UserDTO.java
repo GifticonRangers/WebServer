@@ -231,4 +231,20 @@ public class UserDTO {
                     .build();
         }
     }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @ToString
+    @Getter
+    public static class userInfoForm {
+        @Schema(description = "기본키")
+        private Long id;
+
+        @Schema(description = "학번/교번", example = "학번/교번")
+        private String idUser;
+
+        @Schema(description = "이름", example = "이름")
+        private String name;
+    }
 }

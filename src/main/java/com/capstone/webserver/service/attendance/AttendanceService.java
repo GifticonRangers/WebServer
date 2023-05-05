@@ -242,18 +242,36 @@ public class AttendanceService {
         return timeList;
     }
 
-    public List<Attendance> showHoldAttendance(AttendanceDTO.showAttendanceForm dto) {
+    public List<UserDTO.userInfoForm> showHoldAttendance(AttendanceDTO.showAttendanceForm dto) {
         String week = dto.getWeekAttendance();
         String time = dto.getTimeAttendance();
         Long idSubject = dto.getIdSubject();
+
+        List<UserDTO.userInfoForm> holdUsers = new ArrayList<UserDTO.userInfoForm>();
 
         if (week == null || time == null || idSubject == null) {
             log.error("Error: Not found data");
             throw new CustomException(BadRequest);
         }
 
-        ArrayList<Attendance> attendances = attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(week, time, idSubject);
+        List<Attendance> holdAttendances = attendanceRepository
+                .findAllByWeekAttendanceAndTimeAttendanceAndIdSubjectAndStateAttendance(week, time, idSubject, State.HOLD);
 
-        return attendanceRepository.findByStateAttendance(State.HOLD);
+
+
+        for (Attendance attendance : holdAttendances) {
+            Long id = attendance.getIdStudent();
+            User user = userRepository.findById(id).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+            UserDTO.userInfoForm users = UserDTO.userInfoForm.builder()
+                    .id(user.getId())
+                    .idUser(user.getIdUser())
+                    .name(user.getNameUser())
+                    .build();
+
+            holdUsers.add(users);
+        }
+
+        return holdUsers;
     }
 }

@@ -26,5 +26,6 @@ public interface AttendanceRepository extends CrudRepository<Attendance, Long> {
     /* 유저의 출석 정보 반환 */
     ArrayList<Attendance> findAllByIdStudent(Long idStudent);
 
-    List<Attendance> findByStateAttendance(State state);
+    /* 특정 과목, 특정 주차의 차시에서 특정 출결 상태인 유저 반환 */
+    List<Attendance> findAllByWeekAttendanceAndTimeAttendanceAndIdSubjectAndStateAttendance(String weekAttendance, String timeAttendance, Long idSubject, State state);
 }
