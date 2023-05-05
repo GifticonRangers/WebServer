@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 @Tag(name = "attendance", description = "attendance 등록 api")
 @RestController
@@ -92,5 +93,17 @@ public class AttendanceApiController {
         return ResponseEntity
                 .status(dateForms != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                 .body(dateForms);
+    }
+
+    @Operation(summary = "Check attendance is Hold",
+            description = "출결 상태가 보류인 학생 반환\n\n"
+                    + "weekAttendance, timeAttendance, idSubject(강좌 기본키값) 입력 필요")
+    @PostMapping("/api/attendance/showHoldAttendance")
+    public ResponseEntity<List<Attendance>> showHoldAttendance(@RequestBody AttendanceDTO.showAttendanceForm dto) {
+        List<Attendance> holdAttendance = attendanceService.showHoldAttendance(dto);
+
+        return ResponseEntity
+                .status(holdAttendance != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
+                .body(holdAttendance);
     }
 }

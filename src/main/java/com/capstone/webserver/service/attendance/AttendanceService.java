@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.capstone.webserver.config.error.ErrorCode.*;
@@ -94,7 +95,7 @@ public class AttendanceService {
     }
 
     public Attendance updateAttendance(AttendanceDTO.updateAttendanceForm dto) {
-        if (dto.getId() == null || (dto.getStateAttendance() < 0 || dto.getStateAttendance() > 3))
+        if (dto.getId() == null || (dto.getStateAttendance() < 0 || dto.getStateAttendance() > 4))
             throw new CustomException(BadRequest);
 
         Attendance attendance = dto.toEntity();
@@ -239,5 +240,20 @@ public class AttendanceService {
         }
 
         return timeList;
+    }
+
+    public List<Attendance> showHoldAttendance(AttendanceDTO.showAttendanceForm dto) {
+        String week = dto.getWeekAttendance();
+        String time = dto.getTimeAttendance();
+        Long idSubject = dto.getIdSubject();
+
+        if (week == null || time == null || idSubject == null) {
+            log.error("Error: Not found data");
+            throw new CustomException(BadRequest);
+        }
+
+        ArrayList<Attendance> attendances = attendanceRepository.findAllByWeekAttendanceAndTimeAttendanceAndIdSubject(week, time, idSubject);
+
+        return attendanceRepository.findByStateAttendance(State.HOLD);
     }
 }

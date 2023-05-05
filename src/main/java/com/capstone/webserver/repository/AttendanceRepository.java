@@ -1,10 +1,12 @@
 package com.capstone.webserver.repository;
 
 import com.capstone.webserver.entity.attendance.Attendance;
+import com.capstone.webserver.entity.attendance.State;
 import org.springframework.data.repository.CrudRepository;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public interface AttendanceRepository extends CrudRepository<Attendance, Long> {
@@ -23,4 +25,6 @@ public interface AttendanceRepository extends CrudRepository<Attendance, Long> {
     
     /* 유저의 출석 정보 반환 */
     ArrayList<Attendance> findAllByIdStudent(Long idStudent);
+
+    List<Attendance> findByStateAttendance(State state);
 }
