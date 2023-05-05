@@ -4,17 +4,23 @@ import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.dto.AttendanceDTO;
 import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.entity.attendance.State;
+import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.repository.AttendanceRepository;
+import com.capstone.webserver.repository.UserRepository;
+import com.capstone.webserver.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 
 import static com.capstone.webserver.config.error.ErrorCode.BadRequest;
+import static com.capstone.webserver.config.error.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @Slf4j
@@ -23,6 +29,9 @@ public class NfcService {
 
     @Autowired
     AttendanceRepository attendanceRepository;
+
+    @Autowired
+    UserService userService;
 
     public void startNfcTag(AttendanceDTO.showAttendanceForm dto) {
         String week = dto.getWeekAttendance();
@@ -84,14 +93,16 @@ public class NfcService {
          */
     }
 
-    public boolean authNfc(Long studentId, AttendanceDTO.showAttendanceForm dto) {
+    public boolean authNfc(Principal principal, AttendanceDTO.showAttendanceForm dto) {
+        User user = getAuth(principal);
+        Long id = user.getId();
         /*
         * 프론트측에서 주는 nfc 주기적으로 읽었다는 data -> nfcCount++;
         * attendance.setNfcCount(nfcCount);
         * attendanceRepository.save(attendance);
         *
-        * 주기적으로 읽어야하기때문에 -> httpState: 2xx(계속 nfc 읽고 있다는 의미의 200) -> true
-        *                          -> httpState: 2xx(종료될 때의 200)                -> false
+        * 주기적으로 읽어야하기때문에 -> httpState: 201 -> true
+        *                          -> httpState: 200 -> false
         *                               => 참고로 endNfcTagApi가 동작하면 종료의 200을 보내야 함
         */
 
@@ -106,7 +117,7 @@ public class NfcService {
         }
 
         Attendance attendance = attendanceRepository
-                .findByWeekAttendanceAndTimeAttendanceAndIdSubjectAndIdStudent(week, time, idSubject, studentId);
+                .findByWeekAttendanceAndTimeAttendanceAndIdSubjectAndIdStudent(week, time, idSubject, id);
 
         if(attendance.getEndAttendance() == null){
             int count = attendance.getNfcCount();
@@ -117,5 +128,10 @@ public class NfcService {
         }
         else
             return false;
+    }
+
+    public User getAuth(Principal principal) {
+        String idUser = principal.getName();
+        return userService.getUserByIdUser(idUser);
     }
 }

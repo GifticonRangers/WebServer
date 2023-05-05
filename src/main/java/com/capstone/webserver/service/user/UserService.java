@@ -181,4 +181,13 @@ public class UserService {
                 .findByIdUser(principal.getName())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
+
+    public User getUserByIdUser(String idUser) {
+        Optional<User> user = userRepository.findByIdUser(idUser);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new CustomException(USER_NOT_FOUND);
+        }
+    }
 }
