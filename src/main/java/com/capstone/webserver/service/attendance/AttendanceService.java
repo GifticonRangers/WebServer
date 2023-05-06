@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.capstone.webserver.config.error.ErrorCode.*;
 
@@ -186,6 +187,9 @@ public class AttendanceService {
             User user = userRepository
                     .findById(attendance.getIdStudent())
                     .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+            if (Objects.equals(user.getId(), attendance.getIdProfessor()))
+                continue;
 
             switch (attendance.getStateAttendance()) {
                 case ATTENDANCE:
