@@ -53,6 +53,7 @@ public class NfcService {
 
         for (Attendance attendance: target) {
             attendance.setStartAttendance(startTime);
+            attendance.setEndAttendance(null);
             attendance.setNfcCount(0);
             attendance.setStateAttendance(State.ABSENCE);
             attendanceRepository.save(attendance);
