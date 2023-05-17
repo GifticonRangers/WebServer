@@ -11,12 +11,18 @@ import com.capstone.webserver.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 import java.security.Principal;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.capstone.webserver.config.error.ErrorCode.BadRequest;
@@ -62,7 +68,48 @@ public class NfcService {
         /*
             인공지능 서버 호출해서 녹화하는 거 시작하는 코드 써야함 ㅋㅋ
             api호출 끝!
-         */
+        */
+        HttpClient httpClient = HttpClient.create()
+                .responseTimeout(Duration.ofSeconds(2));
+
+        WebClient webClient =
+                WebClient
+                        .builder()
+                        .clientConnector(new ReactorClientHttpConnector(httpClient))
+                        .baseUrl("http://210.111.178.30:9000")
+                        .build();
+
+        webClient
+                        .get()
+                        .uri(uriBuilder ->
+                                uriBuilder
+                                        .path("/record_start/" + week + "/" + time + "/" + idSubject)
+                                        .build())
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .subscribe(response -> {
+                            log.info("영상녹화 시작");
+                        }, error -> {
+                            log.info("영상녹화 시작");
+                        });;
+
+
+//        return webClient
+//                .get()
+//                .uri(uriBuilder ->
+//                        uriBuilder
+//                                .path("/record_start/" + week + "/" + time + "/" + idSubject)
+//                                .build())
+//                .exchange()
+//                .flatMap(response -> {
+//                    log.info(response);
+//                    if ("START_RECORDING".equals(response)) {
+//                        return Mono.just("Recording started successfully");
+//                    } else {
+//                        return Mono.just("Failed to start recording");
+//                    }
+//                });
+
     }
 
     public void endNfcTag(AttendanceDTO.showAttendanceForm dto) {
@@ -92,6 +139,26 @@ public class NfcService {
             인공지능 서버 호출해서 녹화하는 거 중지하는 코드 써야함 ㅋㅋ
             api호출 끝!
          */
+
+        WebClient webClient =
+                WebClient
+                        .builder()
+                        .baseUrl("http://210.111.178.30:9000")
+                        .build();
+
+        String response =
+                webClient
+                        .get()
+                        .uri(uriBuilder ->
+                                uriBuilder
+                                        .path("/record_stop/" + week + "/" + time + "/" + idSubject)
+                                        .build())
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
+
+        // 결과 확인
+        log.info(response);
     }
 
     public boolean authNfc(Principal principal, AttendanceDTO.showAttendanceForm dto) {
