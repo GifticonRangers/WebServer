@@ -4,8 +4,10 @@ import com.capstone.webserver.config.error.CustomException;
 import com.capstone.webserver.dto.AttendanceDTO;
 import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.entity.attendance.State;
+import com.capstone.webserver.entity.nfc.Nfc;
 import com.capstone.webserver.entity.user.User;
 import com.capstone.webserver.repository.AttendanceRepository;
+import com.capstone.webserver.repository.NFCRepository;
 import com.capstone.webserver.repository.UserRepository;
 import com.capstone.webserver.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserter;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -35,6 +41,9 @@ public class NfcService {
 
     @Autowired
     AttendanceRepository attendanceRepository;
+
+    @Autowired
+    NFCRepository nfcRepository;
 
     @Autowired
     UserService userService;
@@ -60,7 +69,6 @@ public class NfcService {
         for (Attendance attendance: target) {
             attendance.setStartAttendance(startTime);
             attendance.setEndAttendance(null);
-            attendance.setNfcCount(0);
             attendance.setStateAttendance(State.ABSENCE);
             attendanceRepository.save(attendance);
         }
@@ -140,6 +148,13 @@ public class NfcService {
             api호출 끝!
          */
 
+        ArrayList<Nfc> nfcArrayList = nfcRepository.findAll();
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+
+        for(Nfc nfc: nfcArrayList) {
+            formData.add("pos/" + nfc.getId(), nfc.getNfcRow() + "/" + nfc.getNfcCol());
+        }
+
         WebClient webClient =
                 WebClient
                         .builder()
@@ -148,11 +163,12 @@ public class NfcService {
 
         String response =
                 webClient
-                        .get()
+                        .post()
                         .uri(uriBuilder ->
                                 uriBuilder
                                         .path("/record_stop/" + week + "/" + time + "/" + idSubject)
                                         .build())
+                        .body(BodyInserters.fromFormData(formData))
                         .retrieve()
                         .bodyToMono(String.class)
                         .block();
@@ -161,7 +177,7 @@ public class NfcService {
         log.info(response);
     }
 
-    public boolean authNfc(Principal principal, AttendanceDTO.showAttendanceForm dto) {
+    public boolean authNfc(Principal principal, AttendanceDTO.NfcAttendanceForm dto) {
         User user = getAuth(principal);
         Long id = user.getId();
         /*
@@ -177,6 +193,7 @@ public class NfcService {
         String week = dto.getWeekAttendance();
         String time = dto.getTimeAttendance();
         Long idSubject = dto.getIdSubject();
+        String nfcNumber = dto.getNfcNumber();
 
 
         if (week == null || time == null || idSubject == null) {
@@ -184,13 +201,31 @@ public class NfcService {
             throw new CustomException(BadRequest);
         }
 
+        if (nfcRepository.findByNfcNumber(nfcNumber) == null) {
+            log.error("Error: Not found nfcTag Info");
+            throw new CustomException(BadRequest);
+        }
+
         Attendance attendance = attendanceRepository
                 .findByWeekAttendanceAndTimeAttendanceAndIdSubjectAndIdStudent(week, time, idSubject, id);
 
         if(attendance.getEndAttendance() == null){
-            int count = attendance.getNfcCount();
-            attendance.setNfcCount(count+1);
-            attendance.setStateAttendance(State.ATTENDANCE);
+            String[] startTime = attendance.getStartAttendance().split("/");
+            int startH = Integer.parseInt(startTime[0]);
+            int startM = Integer.parseInt(startTime[1]);
+
+            Date nowDate = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH/mm");
+            String[] nowTime = sdf.format(nowDate).split("/");
+
+            int nowH = Integer.parseInt(nowTime[0]);
+            int nowM = Integer.parseInt(nowTime[1]);
+
+            if((nowH * 60 + nowM) - (startH * 60 + startM) >= 10)
+                attendance.setStateAttendance(State.LATE);
+            else
+                attendance.setStateAttendance(State.ATTENDANCE);
+
             attendanceRepository.save(attendance);
             return true;
         }

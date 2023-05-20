@@ -44,13 +44,13 @@ public class NfcApiController {
             description = "NFC 인증\n\n"
                         + "weekAttendance(출석 주차), timeAttendance(출석 차시), idSubject(과목 기본키 값) 필요")
     @PostMapping("/api/nfc/authNFC")
-    public ResponseEntity authNfc(Principal principal, @RequestBody AttendanceDTO.showAttendanceForm dto) {
+    public ResponseEntity authNfc(Principal principal, @RequestBody AttendanceDTO.NfcAttendanceForm dto) {
         boolean state = nfcService.authNfc(principal, dto);
 
         /*
         * state = true 201 반환
         * state = false 200 반환
-        * */
+        */
         return state ? ResponseEntity.status(HttpStatus.CREATED).build() : ResponseEntity.status(HttpStatus.OK).build();
     }
 }

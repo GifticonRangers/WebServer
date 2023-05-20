@@ -47,8 +47,8 @@ public class Attendance {
     @Schema(description = "출석 끝냄을 나타냄")
     @Column private String endAttendance;
 
-    @Schema(description = "출석 횟수를 나타냄")
-    @Column private int nfcCount;
+    @Schema(description = "Nfc의 기본키값")
+    @Column private Long idNfc;
 
     public void patch(Attendance target) {
         if (target.dateAttendance != null)
@@ -74,5 +74,11 @@ public class Attendance {
 
         if (target.startAttendance != null)
             this.startAttendance = target.startAttendance;
+
+        if (target.endAttendance != null)
+            this.endAttendance = target.endAttendance;
+
+        if (target.idNfc != null)
+            this.idNfc = target.idNfc;
     }
 }

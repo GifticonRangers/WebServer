@@ -3,6 +3,7 @@ package com.capstone.webserver.dto;
 import com.capstone.webserver.entity.attendance.Attendance;
 import com.capstone.webserver.entity.attendance.State;
 import com.capstone.webserver.entity.user.User;
+import com.capstone.webserver.repository.NFCRepository;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -144,5 +145,25 @@ public class AttendanceDTO {
                     .idSubject(idSubject)
                     .build();
         }
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    @ToString
+    @Getter
+    public static class NfcAttendanceForm {
+
+        @Schema(description = "출석 주차", example = "주차")
+        private String weekAttendance;
+
+        @Schema(description = "출석 차시", example = "차시")
+        private String timeAttendance;
+
+        @Schema(description = "Subject의 기본키값")
+        private Long idSubject;
+
+        @Schema(description = "nfc 고유번호")
+        private String nfcNumber;
     }
 }
