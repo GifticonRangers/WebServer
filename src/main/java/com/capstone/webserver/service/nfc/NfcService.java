@@ -148,12 +148,12 @@ public class NfcService {
             api호출 끝!
          */
 
-        ArrayList<Nfc> nfcArrayList = nfcRepository.findAll();
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-
-        for(Nfc nfc: nfcArrayList) {
-            formData.add("pos/" + nfc.getId(), nfc.getNfcRow() + "/" + nfc.getNfcCol());
-        }
+//        ArrayList<Nfc> nfcArrayList = nfcRepository.findAll();
+//        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+//
+//        for(Nfc nfc: nfcArrayList) {
+//            formData.add("pos/" + nfc.getId(), nfc.getNfcRow() + "/" + nfc.getNfcCol());
+//        }
 
         WebClient webClient =
                 WebClient
@@ -163,12 +163,13 @@ public class NfcService {
 
         String response =
                 webClient
-                        .post()
+//                        .post()
+                        .get()
                         .uri(uriBuilder ->
                                 uriBuilder
                                         .path("/record_stop/" + week + "/" + time + "/" + idSubject)
                                         .build())
-                        .body(BodyInserters.fromFormData(formData))
+//                        .body(BodyInserters.fromFormData(formData))
                         .retrieve()
                         .bodyToMono(String.class)
                         .block();
@@ -177,7 +178,7 @@ public class NfcService {
         log.info(response);
     }
 
-    public boolean authNfc(Principal principal, AttendanceDTO.NfcAttendanceForm dto) {
+    public boolean authNfc(Principal principal, AttendanceDTO.showAttendanceForm dto) {
         User user = getAuth(principal);
         Long id = user.getId();
         /*
@@ -193,7 +194,7 @@ public class NfcService {
         String week = dto.getWeekAttendance();
         String time = dto.getTimeAttendance();
         Long idSubject = dto.getIdSubject();
-        String nfcNumber = dto.getNfcNumber();
+//        String nfcNumber = dto.getNfcNumber();
 
 
         if (week == null || time == null || idSubject == null) {
@@ -201,10 +202,10 @@ public class NfcService {
             throw new CustomException(BadRequest);
         }
 
-        if (nfcRepository.findByNfcNumber(nfcNumber) == null) {
-            log.error("Error: Not found nfcTag Info");
-            throw new CustomException(BadRequest);
-        }
+//        if (nfcRepository.findByNfcNumber(nfcNumber) == null) {
+//            log.error("Error: Not found nfcTag Info");
+//            throw new CustomException(BadRequest);
+//        }
 
         Attendance attendance = attendanceRepository
                 .findByWeekAttendanceAndTimeAttendanceAndIdSubjectAndIdStudent(week, time, idSubject, id);
