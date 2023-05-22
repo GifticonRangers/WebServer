@@ -222,7 +222,7 @@ public class NfcService {
             int nowH = Integer.parseInt(nowTime[0]);
             int nowM = Integer.parseInt(nowTime[1]);
 
-            if((nowH * 60 + nowM) - (startH * 60 + startM) >= 10)
+            if((nowH * 60 + nowM) - (startH * 60 + startM) >= 1)
                 attendance.setStateAttendance(State.LATE);
             else
                 attendance.setStateAttendance(State.ATTENDANCE);
